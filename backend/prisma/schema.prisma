@@ -1,0 +1,134 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String?
+  avatar    String?
+  provider  String   @default("local")
+  googleId  String?  @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  trips       Trip[]
+  sharedTrips SharedTrip[]
+
+  @@map("users")
+}
+
+model Trip {
+  id          String   @id @default(uuid())
+  title       String
+  description String?
+  startDate   DateTime
+  endDate     DateTime
+  coverImage  String?
+  isPublic    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  stops         TripStop[]
+  itinerary     ItineraryActivity[]
+  expenses      Expense[]
+  sharedTrips   SharedTrip[]
+
+  @@map("trips")
+}
+
+model TripStop {
+  id        String   @id @default(uuid())
+  city      String
+  country   String
+  latitude  Float?
+  longitude Float?
+  arrival   DateTime
+  departure DateTime
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tripId String
+  trip   Trip   @relation(fields: [tripId], references: [id], onDelete: Cascade)
+
+  activities Activity[]
+
+  @@map("trip_stops")
+}
+
+model Activity {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  category    String?
+  cost        Float?   @default(0)
+  duration    Int?
+  startTime   DateTime?
+  endTime     DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  tripStopId String
+  tripStop   TripStop @relation(fields: [tripStopId], references: [id], onDelete: Cascade)
+
+  itineraryActivities ItineraryActivity[]
+
+  @@map("activities")
+}
+
+model ItineraryActivity {
+  id        String   @id @default(uuid())
+  day       Int
+  notes     String?
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tripId     String
+  trip       Trip      @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  activityId String
+  activity   Activity  @relation(fields: [activityId], references: [id], onDelete: Cascade)
+
+  @@unique([tripId, activityId])
+  @@map("itinerary_activities")
+}
+
+model Expense {
+  id          String   @id @default(uuid())
+  category    String
+  description String?
+  amount      Float
+  currency    String   @default("INR")
+  date        DateTime @default(now())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  tripId String
+  trip   Trip   @relation(fields: [tripId], references: [id], onDelete: Cascade)
+
+  @@map("expenses")
+}
+
+model SharedTrip {
+  id        String   @id @default(uuid())
+  permission String   @default("view")
+  createdAt DateTime @default(now())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tripId String
+  trip   Trip   @relation(fields: [tripId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, tripId])
+  @@map("shared_trips")
+}
