@@ -1,29 +1,46 @@
 const express = require('express');
+const passport = require('passport');
+const { authenticate } = require('../middleware/auth');
+const authController = require('../controllers/authController');
 
 const router = express.Router();
 
-router.post('/register', (req, res) => {
-  res.status(501).json({ success: false, message: 'Not implemented yet' });
-});
+router.post('/register', authController.register);
+router.post('/login', authController.login);
+router.post('/logout', authenticate, authController.logout);
+router.get('/me', authenticate, authController.getMe);
 
-router.post('/login', (req, res) => {
-  res.status(501).json({ success: false, message: 'Not implemented yet' });
-});
+router.post('/forgot-password', authController.forgotPassword);
+router.post('/reset-password', authController.resetPassword);
 
-router.post('/logout', (req, res) => {
-  res.status(501).json({ success: false, message: 'Not implemented yet' });
-});
+if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
+  router.get(
+    '/google',
+    passport.authenticate('google', { session: false, scope: ['profile', 'email'] })
+  );
 
-router.get('/me', (req, res) => {
-  res.status(501).json({ success: false, message: 'Not implemented yet' });
-});
+  router.get(
+    '/google/callback',
+    passport.authenticate('google', {
+      session: false,
+      failureRedirect: '/api/auth/google/failure',
+    }),
+    authController.googleCallback
+  );
 
-router.get('/google', (req, res) => {
-  res.status(501).json({ success: false, message: 'Not implemented yet' });
-});
-
-router.get('/google/callback', (req, res) => {
-  res.status(501).json({ success: false, message: 'Not implemented yet' });
-});
+  router.get('/google/failure', (_req, res) => {
+    res.status(401).json({
+      success: false,
+      message: 'Google authentication failed.',
+    });
+  });
+} else {
+  router.get(['/google', '/google/callback'], (_req, res) => {
+    res.status(503).json({
+      success: false,
+      message: 'Google OAuth is not configured on this server.',
+    });
+  });
+}
 
 module.exports = router;
