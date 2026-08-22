@@ -1,15 +1,10 @@
 import React from 'react';
-import { Calendar, MapPin, CheckCircle2, Pencil, ArrowLeft } from 'lucide-react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Calendar, MapPin, CheckCircle2 } from 'lucide-react';
 
 const TripHeader = ({ trip }) => {
-  const navigate = useNavigate();
-  const { tripId } = useParams();
-  const targetTripId = tripId || trip?.id || 'trip-101';
-
   return (
     <div className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-xs sm:p-8">
-      <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+      <div className="flex flex-col gap-6">
         
         {/* Left Info Column */}
         <div className="space-y-3">
@@ -51,29 +46,6 @@ const TripHeader = ({ trip }) => {
             </div>
 
           </div>
-        </div>
-
-        {/* Right Actions Column */}
-        <div className="flex items-center gap-3 shrink-0 border-t border-slate-100 pt-4 lg:border-t-0 lg:pt-0">
-          <button
-            type="button"
-            onClick={() => navigate('/dashboard')}
-            className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-xs sm:text-sm font-semibold text-slate-700 shadow-xs transition-all hover:bg-slate-50 focus-visible:outline-2 focus-visible:outline-teal-600 cursor-pointer active:scale-95"
-            aria-label="Back to Dashboard"
-          >
-            <ArrowLeft className="h-4 w-4 text-slate-500" />
-            <span>Dashboard</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => navigate(`/trips/${targetTripId}/itinerary`)}
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-teal-600 to-emerald-600 px-5 py-2.5 text-xs sm:text-sm font-semibold text-white shadow-md shadow-teal-600/20 transition-all hover:from-teal-500 hover:to-emerald-500 focus-visible:outline-2 focus-visible:outline-teal-600 cursor-pointer active:scale-95"
-            aria-label="Edit Itinerary"
-          >
-            <Pencil className="h-4 w-4" />
-            <span>Edit Itinerary</span>
-          </button>
         </div>
 
       </div>
