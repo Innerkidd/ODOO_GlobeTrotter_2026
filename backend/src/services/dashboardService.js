@@ -52,12 +52,12 @@ const calculateTripStatus = (startDate, endDate) => {
   const end = new Date(endDate);
 
   if (today < start) {
-    return 'upcoming';
+    return 'Upcoming';
   }
   if (today >= start && today <= end) {
-    return 'ongoing';
+    return 'Ongoing';
   }
-  return 'completed';
+  return 'Completed';
 };
 
 const getDashboard = async (userId) => {
@@ -75,7 +75,7 @@ const getDashboard = async (userId) => {
     throw httpError(404, 'User not found.');
   }
 
-  // B. Recent Trips (up to 5, mapped title -> name & computed status)
+  // B. Recent Trips (up to 5, including coverImage & computed status)
   const trips = await prisma.trip.findMany({
     where: { userId },
     orderBy: { startDate: 'desc' },
@@ -85,6 +85,7 @@ const getDashboard = async (userId) => {
       title: true,
       startDate: true,
       endDate: true,
+      coverImage: true,
       _count: {
         select: { stops: true },
       },
@@ -96,6 +97,7 @@ const getDashboard = async (userId) => {
     name: trip.title,
     startDate: trip.startDate,
     endDate: trip.endDate,
+    coverImage: trip.coverImage,
     status: calculateTripStatus(trip.startDate, trip.endDate),
     destinationCount: trip._count ? trip._count.stops : 0,
   }));
