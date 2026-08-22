@@ -1,12 +1,3 @@
-<<<<<<< HEAD
-import React from 'react';
-
-const DashboardPage = () => {
-  return (
-    <div className="min-h-screen bg-slate-50 p-6">
-      <h1 className="font-heading text-2xl font-extrabold text-slate-900">Dashboard</h1>
-      <p className="mt-2 text-slate-600">Welcome to your dashboard</p>
-=======
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -150,13 +141,8 @@ const DashboardPage = () => {
       </main>
 
       <Footer />
->>>>>>> 651a842a93d859e547de308628b3a39ce622c222
     </div>
   );
 };
 
-<<<<<<< HEAD
 export default DashboardPage;
-=======
-export default DashboardPage;
->>>>>>> 651a842a93d859e547de308628b3a39ce622c222

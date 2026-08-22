@@ -1,17 +1,4 @@
 import React from 'react';
-<<<<<<< HEAD
-
-const CreateTripPage = () => {
-  return (
-    <div className="min-h-screen bg-slate-50 p-6">
-      <h1 className="font-heading text-2xl font-extrabold text-slate-900">Create Trip</h1>
-      <p className="mt-2 text-slate-600">Create a new trip</p>
-    </div>
-  );
-};
-
-export default CreateTripPage;
-=======
 import AuthLayout from '../../components/auth/AuthLayout/AuthLayout';
 import TripForm from '../../components/trips/TripForm/TripForm';
 
@@ -37,4 +24,3 @@ const CreateTripPage = () => {
 };
 
 export default CreateTripPage;
->>>>>>> 651a842a93d859e547de308628b3a39ce622c222

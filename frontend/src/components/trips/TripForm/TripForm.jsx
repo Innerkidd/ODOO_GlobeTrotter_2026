@@ -57,7 +57,9 @@ const TripForm = () => {
   };
 
   const onSubmit = (data) => {
+    const tripId = crypto.randomUUID();
     const tripDraft = {
+      id: tripId,
       tripName: data.tripName,
       startDate: data.startDate,
       endDate: data.endDate,
@@ -65,9 +67,9 @@ const TripForm = () => {
       coverPhotoPreviewUrl: coverPhotoPreviewUrl || null,
     };
 
-    toast.success('Trip details ready for the next step.');
+    toast.success('Trip created! Start building your itinerary.');
 
-    navigate('/dashboard', {
+    navigate(`/trips/${tripId}/itinerary`, {
       state: { tripDraft },
     });
   };
