@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { ArrowRight, Sparkles } from 'lucide-react';
 import TravelVisual from './TravelVisual';
 
@@ -32,14 +33,14 @@ const Hero = () => {
 
             {/* Primary CTA */}
             <div className="mt-8 flex flex-wrap items-center gap-4">
-              <button
-                type="button"
+              <Link
+                to="/login"
                 className="group inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-teal-600 to-emerald-600 px-6 py-3.5 text-base font-semibold text-white shadow-lg shadow-teal-600/25 transition-all hover:from-teal-500 hover:to-emerald-500 hover:shadow-xl hover:shadow-teal-600/35 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600 active:scale-95"
                 aria-label="Plan a Trip"
               >
                 <span>Plan a Trip</span>
                 <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
-              </button>
+              </Link>
             </div>
           </div>
 

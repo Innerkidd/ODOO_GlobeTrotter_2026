@@ -1,12 +1,13 @@
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
-import LandingPage from './pages/LandingPage/LandingPage';
+import { Toaster } from 'sonner';
+import AppRoutes from './routes/AppRoutes/AppRoutes';
 
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<LandingPage />} />
-    </Routes>
+    <>
+      <Toaster richColors position="top-right" closeButton />
+      <AppRoutes />
+    </>
   );
 }
 
