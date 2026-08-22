@@ -11,6 +11,7 @@ import CreateTripPage from '../../pages/CreateTripPage/CreateTripPage';
 import ItineraryBuilderPage from '../../pages/ItineraryBuilderPage/ItineraryBuilderPage';
 import ItineraryViewPage from '../../pages/ItineraryViewPage/ItineraryViewPage';
 import BudgetPage from '../../pages/BudgetPage/BudgetPage';
+import CalendarPage from '../../pages/CalendarPage/CalendarPage';
 
 const AppRoutes = () => {
   return (
@@ -33,6 +34,10 @@ const AppRoutes = () => {
       {/* Budget Routes */}
       <Route path="/trips/:tripId/budget" element={<BudgetPage />} />
       <Route path="/budget" element={<BudgetPage />} />
+
+      {/* Calendar / Timeline Routes */}
+      <Route path="/trips/:tripId/calendar" element={<CalendarPage />} />
+      <Route path="/calendar" element={<CalendarPage />} />
 
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

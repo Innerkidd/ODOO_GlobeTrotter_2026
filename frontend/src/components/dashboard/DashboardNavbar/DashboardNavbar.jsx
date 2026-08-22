@@ -29,11 +29,14 @@ const DashboardNavbar = ({ userName = 'Traveler', avatarUrl = '' }) => {
             </span>
           </Link>
 
-          {/* Active Navigation Tab */}
-          <nav className="hidden md:flex items-center gap-1">
-            <span className="rounded-lg bg-teal-50 px-3 py-1.5 text-xs font-semibold text-teal-700">
+          {/* Navigation Tabs */}
+          <nav className="hidden md:flex items-center gap-2">
+            <Link to="/dashboard" className="rounded-lg bg-teal-50 px-3 py-1.5 text-xs font-semibold text-teal-700">
               Dashboard
-            </span>
+            </Link>
+            <Link to="/budget" className="rounded-lg px-3 py-1.5 text-xs font-semibold text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-all">
+              Budget & Cost
+            </Link>
           </nav>
         </div>
 
