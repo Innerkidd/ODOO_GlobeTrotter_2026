@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import DashboardNavbar from '../../components/dashboard/DashboardNavbar/DashboardNavbar';
 import WelcomeHeader from '../../components/dashboard/WelcomeHeader/WelcomeHeader';
@@ -14,6 +15,7 @@ import {
 
 const DashboardPage = () => {
   const [trips, setTrips] = useState(mockRecentTrips);
+  const navigate = useNavigate();
 
   const handlePlanNewTrip = () => {
     toast.info('Trip creation wizard will be connected when the Create Trip feature is implemented.', {
@@ -22,9 +24,7 @@ const DashboardPage = () => {
   };
 
   const handleViewTrip = (trip) => {
-    toast.info(`Opening details for "${trip.title}". Itinerary builder will be connected in future updates.`, {
-      duration: 4000,
-    });
+    navigate(`/trips/${trip.id}/itinerary/view`);
   };
 
   const handleSelectDestination = (dest) => {

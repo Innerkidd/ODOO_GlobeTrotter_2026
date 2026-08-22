@@ -5,6 +5,7 @@ import LoginPage from '../../pages/LoginPage/LoginPage';
 import SignupPage from '../../pages/SignupPage/SignupPage';
 import ForgotPasswordPage from '../../pages/ForgotPasswordPage/ForgotPasswordPage';
 import DashboardPage from '../../pages/DashboardPage/DashboardPage';
+import ItineraryViewPage from '../../pages/ItineraryViewPage/ItineraryViewPage';
 
 const AppRoutes = () => {
   return (
@@ -14,6 +15,10 @@ const AppRoutes = () => {
       <Route path="/signup" element={<SignupPage />} />
       <Route path="/forgot-password" element={<ForgotPasswordPage />} />
       <Route path="/dashboard" element={<DashboardPage />} />
+      
+      {/* Itinerary View Routes */}
+      <Route path="/trips/:tripId/itinerary/view" element={<ItineraryViewPage />} />
+      <Route path="/itinerary/view" element={<ItineraryViewPage />} />
     </Routes>
   );
 };
