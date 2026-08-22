@@ -11,6 +11,9 @@ import CreateTripPage from '../../pages/CreateTripPage/CreateTripPage';
 import ItineraryBuilderPage from '../../pages/ItineraryBuilderPage/ItineraryBuilderPage';
 import ItineraryViewPage from '../../pages/ItineraryViewPage/ItineraryViewPage';
 import BudgetPage from '../../pages/BudgetPage/BudgetPage';
+import CalendarPage from '../../pages/CalendarPage/CalendarPage';
+import ShareTripPage from '../../pages/ShareTripPage/ShareTripPage';
+import PublicTripPage from '../../pages/PublicTripPage/PublicTripPage';
 
 const AppRoutes = () => {
   return (
@@ -33,6 +36,16 @@ const AppRoutes = () => {
       {/* Budget Routes */}
       <Route path="/trips/:tripId/budget" element={<BudgetPage />} />
       <Route path="/budget" element={<BudgetPage />} />
+
+      {/* Calendar / Timeline Routes */}
+      <Route path="/trips/:tripId/calendar" element={<CalendarPage />} />
+      <Route path="/calendar" element={<CalendarPage />} />
+
+      {/* Share Trip & Public Itinerary Routes */}
+      <Route path="/trips/:tripId/share" element={<ShareTripPage />} />
+      <Route path="/share" element={<ShareTripPage />} />
+      <Route path="/public/trips/:shareId" element={<PublicTripPage />} />
+      <Route path="/public/trips/demo-trip" element={<PublicTripPage />} />
 
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

@@ -1,15 +1,12 @@
-<<<<<<< Updated upstream
-import React from 'react';
-=======
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 import { apiRequest } from '../../lib/apiClient';
-
->>>>>>> Stashed changes
 import AuthLayout from '../../components/auth/AuthLayout/AuthLayout';
 import TripForm from '../../components/trips/TripForm/TripForm';
 
 const CreateTripPage = () => {
+  const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Auth guard: redirect to login if no token
@@ -20,7 +17,7 @@ const CreateTripPage = () => {
     }
   }, []);
 
-  const onSubmit = async (data) => {
+  const handleTripSubmit = async (data) => {
     setIsSubmitting(true);
     try {
       const res = await apiRequest('/trips', {
@@ -66,16 +63,10 @@ const CreateTripPage = () => {
         <p className="mt-1 text-sm text-slate-500">
           Start planning your personalized journey.
         </p>
-        <TripForm onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
-          {/* Form fields are handled by TripForm component */}
-        </TripForm>
+        <TripForm onSubmit={handleTripSubmit} isSubmitting={isSubmitting} />
       </div>
     </AuthLayout>
   );
 };
 
-<<<<<<< Updated upstream
 export default CreateTripPage;
-=======
-export default CreateTripPage;
->>>>>>> Stashed changes

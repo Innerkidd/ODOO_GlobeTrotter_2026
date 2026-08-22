@@ -1,5 +1,6 @@
 import React from 'react';
-import { Calendar, MapPin, Clock, CheckCircle } from 'lucide-react';
+import { Calendar, MapPin, Clock, CheckCircle, Wallet } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const calculateDays = (start, end) => {
   if (!start || !end) return 1;
@@ -11,6 +12,7 @@ const calculateDays = (start, end) => {
 };
 
 const TripOverviewHeader = ({ trip, stopsCount, onSaveJourney }) => {
+  const navigate = useNavigate();
   const durationDays = calculateDays(trip.startDate, trip.endDate);
 
   return (
@@ -64,14 +66,25 @@ const TripOverviewHeader = ({ trip, stopsCount, onSaveJourney }) => {
               </span>
             </div>
 
-            <button
-              type="button"
-              onClick={onSaveJourney}
-              className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-teal-600 to-emerald-600 px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-teal-600/20 transition-all hover:from-teal-500 hover:to-emerald-500 hover:shadow-lg active:scale-95 cursor-pointer ml-auto"
-            >
-              <CheckCircle className="h-4 w-4" />
-              Save Journey
-            </button>
+            <div className="flex items-center gap-2 ml-auto">
+              <button
+                type="button"
+                onClick={() => navigate(`/trips/${trip.id || 'trip-101'}/budget`)}
+                className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-xs transition-all hover:bg-slate-50 hover:text-teal-700 cursor-pointer"
+              >
+                <Wallet className="h-4 w-4 text-teal-600" />
+                <span>View Budget</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={onSaveJourney}
+                className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-teal-600 to-emerald-600 px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-teal-600/20 transition-all hover:from-teal-500 hover:to-emerald-500 hover:shadow-lg active:scale-95 cursor-pointer"
+              >
+                <CheckCircle className="h-4 w-4" />
+                Save Journey
+              </button>
+            </div>
           </div>
         </div>
       </div>
