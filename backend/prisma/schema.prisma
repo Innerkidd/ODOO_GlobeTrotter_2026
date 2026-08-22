@@ -41,7 +41,6 @@ model Trip {
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   stops         TripStop[]
-  itinerary     ItineraryActivity[]
   expenses      Expense[]
   sharedTrips   SharedTrip[]
 
@@ -57,7 +56,6 @@ model TripStop {
   arrival   DateTime
   departure DateTime
   notes     String?
-  order     Int      @default(0)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -84,26 +82,7 @@ model Activity {
   tripStopId String
   tripStop   TripStop @relation(fields: [tripStopId], references: [id], onDelete: Cascade)
 
-  itineraryActivities ItineraryActivity[]
-
   @@map("activities")
-}
-
-model ItineraryActivity {
-  id        String   @id @default(uuid())
-  day       Int
-  notes     String?
-  order     Int      @default(0)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  tripId     String
-  trip       Trip      @relation(fields: [tripId], references: [id], onDelete: Cascade)
-  activityId String
-  activity   Activity  @relation(fields: [activityId], references: [id], onDelete: Cascade)
-
-  @@unique([tripId, activityId])
-  @@map("itinerary_activities")
 }
 
 model Expense {

@@ -15,7 +15,7 @@ const CreateTripPage = () => {
     if (!token) {
       navigate('/login');
     }
-  }, []);
+  }, [navigate]);
 
   const handleTripSubmit = async (data) => {
     setIsSubmitting(true);
@@ -32,20 +32,18 @@ const CreateTripPage = () => {
         }),
       });
 
-      // res.data is the created Trip row from the backend
       const tripForHandoff = {
-        id: res.data.id,                 // REAL backend id
-        tripName: res.data.title,        // map back for consistency
+        id: res.data.id,
+        tripName: res.data.title,
         startDate: res.data.startDate,
         endDate: res.data.endDate,
         description: res.data.description,
-        coverPhotoPreviewUrl: null,      // frontend-only preview (no upload yet)
+        coverPhotoPreviewUrl: null,
         stops: [],
       };
 
       toast.success('Trip details ready for the next step.');
 
-      // Navigate to itinerary with real trip id
       navigate(`/trips/${res.data.id}/itinerary`, { state: { trip: tripForHandoff } });
     } catch (err) {
       toast.error(err.message || 'Could not create trip. Please try again.');
@@ -63,7 +61,9 @@ const CreateTripPage = () => {
         <p className="mt-1 text-sm text-slate-500">
           Start planning your personalized journey.
         </p>
-        <TripForm onSubmit={handleTripSubmit} isSubmitting={isSubmitting} />
+        <div className="mt-6">
+          <TripForm onSubmit={handleTripSubmit} isSubmitting={isSubmitting} />
+        </div>
       </div>
     </AuthLayout>
   );
