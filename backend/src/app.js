@@ -1,11 +1,15 @@
 const express = require('express');
 const cors = require('cors');
+const passport = require('passport');
 const config = require('./config');
 const { errorHandler, notFound } = require('./middleware/errorHandler');
+
+require('./config/passport').configurePassport();
 
 const app = express();
 
 // Middleware
+app.use(passport.initialize());
 app.use(cors({
   origin: config.frontendUrl,
   credentials: true,

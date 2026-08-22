@@ -1,15 +1,25 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Sparkles } from 'lucide-react';
+import { ArrowRight, MapPin, Sparkles } from 'lucide-react';
 import TravelVisual from './TravelVisual';
 
+const popularDestinations = ['Paris', 'Tokyo', 'Rome', 'Bali', 'Kyoto'];
+
 const Hero = () => {
+  const [destination, setDestination] = useState('');
+  const [selectedChip, setSelectedChip] = useState('');
+
+  const handleChipClick = (city) => {
+    setSelectedChip(city);
+    setDestination(city);
+  };
+
   return (
     <section className="relative overflow-hidden py-12 sm:py-16 lg:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-12 lg:gap-8">
           
-          {/* LEFT COLUMN: Copywriting & Primary CTA */}
+          {/* LEFT COLUMN: Copywriting & Primary CTA / Search */}
           <div className="flex flex-col items-start text-left lg:col-span-6">
             
             {/* Top Pill Tag */}
@@ -31,17 +41,52 @@ const Hero = () => {
               Create multi-city trips, discover activities, and organize your entire journey in one place.
             </p>
 
-            {/* Primary CTA */}
-            <div className="mt-8 flex flex-wrap items-center gap-4">
-              <Link
-                to="/login"
-                className="group inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-teal-600 to-emerald-600 px-6 py-3.5 text-base font-semibold text-white shadow-lg shadow-teal-600/25 transition-all hover:from-teal-500 hover:to-emerald-500 hover:shadow-xl hover:shadow-teal-600/35 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600 active:scale-95"
-                aria-label="Plan a Trip"
-              >
-                <span>Plan a Trip</span>
-                <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
-              </Link>
+            {/* Interactive Search & Plan Box */}
+            <div className="mt-8 w-full max-w-xl">
+              <form onSubmit={(e) => e.preventDefault()} className="relative flex items-center rounded-2xl border border-slate-200 bg-white p-2 shadow-lg shadow-slate-200/50 transition-all focus-within:border-teal-500 focus-within:ring-4 focus-within:ring-teal-500/10">
+                <div className="flex items-center pl-3 pr-2 text-slate-400">
+                  <MapPin className="h-5 w-5 text-teal-600" />
+                </div>
+                <input
+                  type="text"
+                  value={destination}
+                  onChange={(e) => {
+                    setDestination(e.target.value);
+                    setSelectedChip('');
+                  }}
+                  placeholder="Where to next? (e.g. Tokyo, Paris, Amalfi)"
+                  className="w-full bg-transparent px-2 py-2.5 text-slate-900 placeholder-slate-400 focus:outline-none text-base font-medium"
+                />
+                <Link
+                  to="/login"
+                  className="group inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-teal-600 to-emerald-600 px-5 py-3 text-sm font-semibold text-white shadow-md shadow-teal-600/20 transition-all hover:from-teal-500 hover:to-emerald-500 hover:shadow-lg focus-visible:outline-2 focus-visible:outline-teal-600 active:scale-95 shrink-0 cursor-pointer"
+                  aria-label="Plan a Trip"
+                >
+                  <span>Plan a Trip</span>
+                  <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
+                </Link>
+              </form>
+
+              {/* Quick Suggestion Chips */}
+              <div className="mt-4 flex flex-wrap items-center gap-2 text-xs font-medium text-slate-500">
+                <span className="text-slate-400">Popular:</span>
+                {popularDestinations.map((city) => (
+                  <button
+                    key={city}
+                    type="button"
+                    onClick={() => handleChipClick(city)}
+                    className={`rounded-full border px-3 py-1 transition-all cursor-pointer active:scale-95 ${
+                      selectedChip === city || destination.toLowerCase() === city.toLowerCase()
+                        ? 'border-teal-500 bg-teal-50 text-teal-700 font-semibold shadow-xs'
+                        : 'border-slate-200 bg-white text-slate-600 hover:border-teal-300 hover:bg-slate-50'
+                    }`}
+                  >
+                    {city}
+                  </button>
+                ))}
+              </div>
             </div>
+
           </div>
 
           {/* RIGHT COLUMN: Travel Visual */}
