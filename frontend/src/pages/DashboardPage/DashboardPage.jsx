@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import DashboardNavbar from '../../components/dashboard/DashboardNavbar/DashboardNavbar';
 import WelcomeHeader from '../../components/dashboard/WelcomeHeader/WelcomeHeader';
@@ -13,12 +14,11 @@ import {
 } from '../../data/staticData/dashboardData';
 
 const DashboardPage = () => {
+  const navigate = useNavigate();
   const [trips, setTrips] = useState(mockRecentTrips);
 
   const handlePlanNewTrip = () => {
-    toast.info('Trip creation wizard will be connected when the Create Trip feature is implemented.', {
-      duration: 4000,
-    });
+    navigate('/create-trip');
   };
 
   const handleViewTrip = (trip) => {
