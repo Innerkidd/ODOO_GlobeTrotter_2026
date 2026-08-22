@@ -134,3 +134,14 @@ model SharedTrip {
   @@unique([userId, tripId])
   @@map("shared_trips")
 }
+
+model Destination {
+  id        String   @id @default(uuid())
+  name      String
+  country   String
+  isPopular Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("destinations")
+}

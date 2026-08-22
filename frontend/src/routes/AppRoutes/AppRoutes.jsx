@@ -41,23 +41,20 @@ const PublicRoute = ({ element }) => {
 const AppRoutes = () => {
   return (
     <Routes>
-      {/* Public routes */}
-      <Route path="/" element={<LandingPage />} />
-      <Route path="/login" element={<PublicRoute element={<LoginPage />} />} />
-      <Route path="/signup" element={<PublicRoute element={<SignupPage />} />} />
-      <Route path="/forgot-password" element={<PublicRoute element={<ForgotPasswordPage />} />} />
-      <Route path="/reset-password" element={<ResetPasswordPage />} />
-      <Route path="/auth/google/success" element={<AuthGoogleSuccess />} />
+      <Route path='/' element={<LandingPage />} />
+      <Route path='/login' element={<PublicRoute element={<LoginPage />} />} />
+      <Route path='/signup' element={<PublicRoute element={<SignupPage />} />} />
+      <Route path='/forgot-password' element={<PublicRoute element={<ForgotPasswordPage />} />} />
+      <Route path='/reset-password' element={<ResetPasswordPage />} />
+      <Route path='/auth/google/success' element={<AuthGoogleSuccess />} />
 
-      {/* Protected routes */}
-      <Route path="/dashboard" element={<ProtectedRoute element={<DashboardPage />} />} />
-      <Route path="/create-trip" element={<ProtectedRoute element={<CreateTripPage />} />} />
-      <Route path="/my-trips" element={<ProtectedRoute element={<MyTripsPage />} />} />
-      <Route path="/itinerary/:id" element={<ProtectedRoute element={<ItineraryPage />} />} />
-      <Route path="/budget" element={<ProtectedRoute element={<BudgetPage />} />} />
-      <Route path="/calendar" element={<ProtectedRoute element={<CalendarPage />} />} />
-
-      <Route path="*" element={<Navigate to="/" replace />} />
+      <Route path='/dashboard' element={<ProtectedRoute element={<DashboardPage />} />} />
+      <Route path='/create-trip' element={<ProtectedRoute element={<CreateTripPage />} />} />
+      <Route path='/my-trips' element={<ProtectedRoute element={<MyTripsPage />} />} />
+      <Route path='/itinerary/:id' element={<ProtectedRoute element={<ItineraryPage />} />} />
+      <Route path='/budget' element={<ProtectedRoute element={<BudgetPage />} />} />
+      <Route path='/calendar' element={<ProtectedRoute element={<CalendarPage />} />} />
+      <Route path='*' element={<Navigate to="/" replace />} />
     </Routes>
   );
 };
