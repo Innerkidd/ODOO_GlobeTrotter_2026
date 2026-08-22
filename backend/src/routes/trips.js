@@ -1,25 +1,15 @@
 const express = require('express');
+const { authenticate } = require('../middleware/auth');
+const tripController = require('../controllers/tripController');
 
 const router = express.Router();
 
-router.get('/', (req, res) => {
-  res.status(501).json({ success: false, message: 'Not implemented yet' });
-});
+router.use(authenticate);
 
-router.get('/:id', (req, res) => {
-  res.status(501).json({ success: false, message: 'Not implemented yet' });
-});
-
-router.post('/', (req, res) => {
-  res.status(501).json({ success: false, message: 'Not implemented yet' });
-});
-
-router.put('/:id', (req, res) => {
-  res.status(501).json({ success: false, message: 'Not implemented yet' });
-});
-
-router.delete('/:id', (req, res) => {
-  res.status(501).json({ success: false, message: 'Not implemented yet' });
-});
+router.get('/', tripController.getTrips);
+router.get('/:id', tripController.getTripById);
+router.post('/', tripController.createTrip);
+router.put('/:id', tripController.updateTrip);
+router.delete('/:id', tripController.deleteTrip);
 
 module.exports = router;
