@@ -1,8 +1,7 @@
 import React from 'react';
 import { Plus, Sparkles } from 'lucide-react';
-import { mockUserData } from '../../../data/staticData/dashboardData';
 
-const WelcomeHeader = ({ onPlanNewTrip }) => {
+const WelcomeHeader = ({ userName = 'Traveler', onPlanNewTrip }) => {
   return (
     <div className="rounded-3xl border border-slate-200/80 bg-white p-6 sm:p-8 lg:p-10 shadow-sm relative overflow-hidden">
       {/* Decorative ambient background accents */}
@@ -17,7 +16,7 @@ const WelcomeHeader = ({ onPlanNewTrip }) => {
             <span>Travel Dashboard</span>
           </div>
           <h1 className="font-heading text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl lg:text-4xl">
-            Welcome back, {mockUserData.name} 👋
+            Welcome back, {userName} 👋
           </h1>
           <p className="mt-1.5 text-sm sm:text-base text-slate-600">
             Ready to plan your next adventure? Organize stops, daily activities, and trip budgets.

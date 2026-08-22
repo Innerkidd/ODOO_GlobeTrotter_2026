@@ -66,10 +66,6 @@ const Hero = () => {
     setShowResults(false);
   };
 
-  const handlePlanTrip = () => {
-    navigate('/login');
-  };
-
   return (
     <section className="relative overflow-hidden py-12 sm:py-16 lg:py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -94,7 +90,7 @@ const Hero = () => {
           </p>
 
           <div className="mt-8 w-full max-w-xl" ref={searchRef}>
-            <form onSubmit={(e) => { e.preventDefault(); handlePlanTrip(); }} className="relative flex items-center rounded-2xl border border-slate-200 bg-white p-2 shadow-lg shadow-slate-200/50 transition-all focus-within:border-teal-500 focus-within:ring-4 focus-within:ring-teal-500/10">
+            <form onSubmit={(e) => { e.preventDefault(); navigate('/login'); }} className="relative flex items-center rounded-2xl border border-slate-200 bg-white p-2 shadow-lg shadow-slate-200/50 transition-all focus-within:border-teal-500 focus-within:ring-4 focus-within:ring-teal-500/10">
               <div className="flex items-center pl-3 pr-2 text-slate-400">
                 <MapPin className="h-5 w-5 text-teal-600" />
               </div>
@@ -164,7 +160,6 @@ const Hero = () => {
               </div>
             )}
           </div>
-
         </div>
       </div>
     </section>

@@ -6,6 +6,8 @@ import { z } from 'zod';
 import { toast } from 'sonner';
 import { ArrowLeft } from 'lucide-react';
 
+import { forgotPassword } from '../../../services/authService';
+
 import AuthLayout from '../../components/auth/AuthLayout/AuthLayout';
 import AuthCard from '../../components/auth/AuthCard/AuthCard';
 import AuthHeader from '../../components/auth/AuthHeader/AuthHeader';
@@ -34,15 +36,21 @@ const ForgotPasswordPage = () => {
     },
   });
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     setIsSubmitting(true);
-    setTimeout(() => {
-      setIsSubmitting(false);
+    try {
+      const response = await forgotPassword({ email: data.email });
+      // Backend intentionally returns a generic response - always show success state
       setSubmitted(true);
-      toast.info('Form validated! Password reset functionality will be connected when authentication APIs are integrated.', {
-        duration: 5000,
-      });
-    }, 600);
+      if (response?.message) {
+        toast.success(response.message);
+      }
+    } catch (error) {
+      // Still generic: do not reveal whether the email exists
+      setSubmitted(true);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -57,32 +65,34 @@ const ForgotPasswordPage = () => {
           <div className="my-4 rounded-xl border border-teal-200 bg-teal-50/80 p-4 text-center text-xs sm:text-sm text-teal-800 backdrop-blur-xs">
             <p className="font-semibold">Reset Request Received</p>
             <p className="mt-1 text-teal-700">
-              Password reset functionality will be connected when the authentication API is integrated.
+              If an account exists for that email, a password reset link has been sent. Please check your inbox.
             </p>
           </div>
         ) : null}
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
-          {/* Email Input */}
-          <FormField
-            id="email"
-            label="Email Address"
-            type="email"
-            placeholder="you@example.com"
-            autoComplete="email"
-            register={register}
-            error={errors.email}
-          />
+        {!submitted && (
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
+            {/* Email Input */}
+            <FormField
+              id="email"
+              label="Email Address"
+              type="email"
+              placeholder="you@example.com"
+              autoComplete="email"
+              register={register}
+              error={errors.email}
+            />
 
-          {/* Submit Button */}
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="w-full rounded-xl bg-gradient-to-r from-teal-600 to-emerald-600 py-3 text-sm font-semibold text-white shadow-md shadow-teal-600/20 transition-all hover:from-teal-500 hover:to-emerald-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600 active:scale-[0.99] disabled:opacity-60 disabled:cursor-not-allowed"
-          >
-            {isSubmitting ? 'Sending link...' : 'Send Reset Link'}
-          </button>
-        </form>
+            {/* Submit Button */}
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full rounded-xl bg-gradient-to-r from-teal-600 to-emerald-600 py-3 text-sm font-semibold text-white shadow-md shadow-teal-600/20 transition-all hover:from-teal-500 hover:to-emerald-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600 active:scale-[0.99] disabled:opacity-60 disabled:cursor-not-allowed"
+            >
+              {isSubmitting ? 'Sending link...' : 'Send Reset Link'}
+            </button>
+          </form>
+        )}
 
         {/* Back to Sign In Link */}
         <div className="mt-6 flex justify-center">

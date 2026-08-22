@@ -5,6 +5,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { toast } from 'sonner';
 
+import { useAuth } from '../../../context/AuthContext';
+
 import AuthLayout from '../../components/auth/AuthLayout/AuthLayout';
 import AuthCard from '../../components/auth/AuthCard/AuthCard';
 import AuthHeader from '../../components/auth/AuthHeader/AuthHeader';
@@ -40,6 +42,7 @@ const signupSchema = z
 
 const SignupPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { signup } = useAuth();
   const navigate = useNavigate();
 
   const {
@@ -57,13 +60,22 @@ const SignupPage = () => {
     },
   });
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     setIsSubmitting(true);
-    setTimeout(() => {
-      setIsSubmitting(false);
-      toast.success('Account created! Navigating to your dashboard...');
-      navigate('/dashboard');
-    }, 400);
+    // Backend expects { name, email, password }
+    const result = await signup({
+      name: data.fullName,
+      email: data.email,
+      password: data.password,
+    });
+    setIsSubmitting(false);
+
+    if (result.success) {
+      toast.success('Account created successfully');
+      navigate('/dashboard', { replace: true });
+    } else {
+      toast.error(result.message || 'Registration failed');
+    }
   };
 
   return (
@@ -148,7 +160,7 @@ const SignupPage = () => {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full rounded-xl bg-gradient-to-r from-teal-600 to-emerald-600 py-3 text-sm font-semibold text-white shadow-md shadow-teal-600/20 transition-all hover:from-teal-500 hover:to-emerald-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600 active:scale-[0.99] disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
+            className="w-full rounded-xl bg-gradient-to-r from-teal-600 to-emerald-600 py-3 text-sm font-semibold text-white shadow-md shadow-teal-600/20 transition-all hover:from-teal-500 hover:to-emerald-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600 active:scale-[0.99] disabled:opacity-60 disabled:cursor-not-allowed"
           >
             {isSubmitting ? 'Creating account...' : 'Create Account'}
           </button>

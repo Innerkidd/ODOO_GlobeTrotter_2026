@@ -2,9 +2,8 @@ import React from 'react';
 import { Wallet, PieChart as PieIcon } from 'lucide-react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import EmptyState from '../../common/EmptyState/EmptyState';
-import { mockBudgetHighlights } from '../../../data/staticData/dashboardData';
 
-const BudgetHighlights = ({ budget = mockBudgetHighlights }) => {
+const BudgetHighlights = ({ budget = {} }) => {
   const currency = budget.currency || '₹';
   const total = budget.totalBudget || 0;
   const planned = budget.plannedAmount || 0;
