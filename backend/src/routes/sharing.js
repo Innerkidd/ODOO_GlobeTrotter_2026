@@ -1,29 +1,17 @@
 const express = require('express');
+const { authenticate } = require('../middleware/auth');
+const sharingController = require('../controllers/sharingController');
 
 const router = express.Router();
 
-router.post('/:tripId', (req, res) => {
-  res.status(501).json({ success: false, message: 'Not implemented yet' });
-});
+// Authenticated: owner sharing management
+router.post('/:tripId', authenticate, sharingController.enableShare);
+router.delete('/:tripId', authenticate, sharingController.disableShare);
 
-router.delete('/:tripId', (req, res) => {
-  res.status(501).json({ success: false, message: 'Not implemented yet' });
-});
+// Public: read-only itinerary (no auth required)
+router.get('/public/:token', sharingController.getPublicTrip);
 
-router.get('/:tripId/users', (req, res) => {
-  res.status(501).json({ success: false, message: 'Not implemented yet' });
-});
-
-router.put('/:tripId/users/:userId', (req, res) => {
-  res.status(501).json({ success: false, message: 'Not implemented yet' });
-});
-
-router.delete('/:tripId/users/:userId', (req, res) => {
-  res.status(501).json({ success: false, message: 'Not implemented yet' });
-});
-
-router.get('/public/:token', (req, res) => {
-  res.status(501).json({ success: false, message: 'Not implemented yet' });
-});
+// Authenticated: copy a public trip into own account
+router.post('/public/:token/copy', authenticate, sharingController.copyTrip);
 
 module.exports = router;

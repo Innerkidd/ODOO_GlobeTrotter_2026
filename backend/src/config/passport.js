@@ -29,13 +29,18 @@ const configurePassport = () => {
 
           let user = await prisma.user.findUnique({ where: { googleId: profile.id } });
 
+          const avatarUrl = profile.photos?.[0]?.value ?? null;
+
           if (!user) {
             const existingByEmail = await prisma.user.findUnique({ where: { email: normalizedEmail } });
 
             if (existingByEmail) {
               user = await prisma.user.update({
                 where: { id: existingByEmail.id },
-                data: { googleId: profile.id, avatar: existingByEmail.avatar || profile.photos[0].value },
+                data: {
+                  googleId: profile.id,
+                  avatar: existingByEmail.avatar || avatarUrl,
+                },
               });
             } else {
               user = await prisma.user.create({
@@ -43,7 +48,7 @@ const configurePassport = () => {
                   name: profile.displayName || normalizedEmail.split('@')[0],
                   email: normalizedEmail,
                   googleId: profile.id,
-                  avatar: profile.photos[0] ? profile.photos[0].value : null,
+                  avatar: avatarUrl,
                   provider: 'google',
                 },
               });
