@@ -7,8 +7,11 @@ const prisma = new PrismaClient();
 
 const configurePassport = () => {
   if (!config.google.clientId || !config.google.clientSecret) {
+    console.log('[OAuth] Google OAuth not configured - missing clientId or clientSecret');
     return;
   }
+
+  console.log('[OAuth] GoogleStrategy configured with callbackURL:', config.google.callbackUrl);
 
   passport.use(
     new GoogleStrategy(
@@ -19,9 +22,12 @@ const configurePassport = () => {
       },
       async (accessToken, refreshToken, profile, done) => {
         try {
+          console.log('[OAuth] Google profile received, id:', profile.id, 'email:', profile.emails?.[0]?.value);
+
           const email = profile.emails && profile.emails[0] ? profile.emails[0].value : null;
 
           if (!email) {
+            console.log('[OAuth] No email in Google profile');
             return done(new Error('No email associated with this Google account.'), null);
           }
 
@@ -35,6 +41,7 @@ const configurePassport = () => {
             const existingByEmail = await prisma.user.findUnique({ where: { email: normalizedEmail } });
 
             if (existingByEmail) {
+              console.log('[OAuth] Linking Google account to existing user by email');
               user = await prisma.user.update({
                 where: { id: existingByEmail.id },
                 data: {
@@ -43,6 +50,7 @@ const configurePassport = () => {
                 },
               });
             } else {
+              console.log('[OAuth] Creating new Google user');
               user = await prisma.user.create({
                 data: {
                   name: profile.displayName || normalizedEmail.split('@')[0],
@@ -53,10 +61,14 @@ const configurePassport = () => {
                 },
               });
             }
+          } else {
+            console.log('[OAuth] User found by googleId');
           }
 
+          console.log('[OAuth] User found/created, id:', user.id);
           return done(null, user);
         } catch (error) {
+          console.log('[OAuth] Error in verify callback:', error.message);
           return done(error, null);
         }
       }

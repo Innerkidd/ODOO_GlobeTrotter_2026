@@ -4,17 +4,22 @@ import { setStoredToken } from '../../../services/api/axiosClient';
 const AuthGoogleSuccess = () => {
   useEffect(() => {
     // Backend redirects here with: /auth/google/success#token=<JWT>
+    console.log('[OAuth] AuthGoogleSuccess mounted, hash:', window.location.hash);
     const hash = window.location.hash;
     const tokenMatch = hash.match(/[#&]token=([^&]+)/);
 
     if (tokenMatch) {
       const token = decodeURIComponent(tokenMatch[1]);
+      console.log('[OAuth] Token received on frontend, length:', token.length);
       setStoredToken(token);
+      console.log('[OAuth] Token stored as globetrotter_token');
       // Strip the token from the URL/history, then full reload lets
       // AuthProvider validate it via GET /auth/me and enter the app
       window.history.replaceState(null, '', '/dashboard');
+      console.log('[OAuth] Navigating to dashboard');
       window.location.replace('/dashboard');
     } else {
+      console.log('[OAuth] No token found in hash, redirecting to login');
       window.location.replace('/login');
     }
   }, []);

@@ -3,7 +3,9 @@ import React from 'react';
 const GoogleButton = ({ text = 'Continue with Google' }) => {
   const handleClick = () => {
     // Browser redirect to backend OAuth endpoint (never via axios)
-    window.location.href = `${import.meta.env.VITE_API_BASE_URL}/auth/google`;
+    const oauthUrl = `${import.meta.env.VITE_API_BASE_URL}/auth/google`;
+    console.log('[OAuth] Google button clicked, navigating to:', oauthUrl);
+    window.location.href = oauthUrl;
   };
 
   return (

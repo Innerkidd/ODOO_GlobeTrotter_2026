@@ -16,11 +16,19 @@ router.post('/reset-password', authController.resetPassword);
 if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
   router.get(
     '/google',
+    (req, res, next) => {
+      console.log('[OAuth] GET /api/auth/google route reached');
+      next();
+    },
     passport.authenticate('google', { session: false, scope: ['profile', 'email'] })
   );
 
   router.get(
     '/google/callback',
+    (req, res, next) => {
+      console.log('[OAuth] GET /api/auth/google/callback route reached');
+      next();
+    },
     passport.authenticate('google', {
       session: false,
       failureRedirect: '/api/auth/google/failure',
@@ -29,6 +37,7 @@ if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
   );
 
   router.get('/google/failure', (_req, res) => {
+    console.log('[OAuth] Google failure endpoint reached');
     res.status(401).json({
       success: false,
       message: 'Google authentication failed.',

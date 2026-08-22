@@ -83,9 +83,14 @@ const resetPassword = async (req, res, next) => {
 };
 
 const googleCallback = (req, res) => {
+  console.log('[OAuth] googleCallback controller reached, user:', req.user?.id);
   const token = generateToken({ id: req.user.id, email: req.user.email });
 
-  res.redirect(`${config.frontendUrl}/auth/google/success#token=${token}`);
+  console.log('[OAuth] JWT generated for user:', req.user.id);
+  const redirectUrl = `${config.frontendUrl}/auth/google/success#token=${token}`;
+  console.log('[OAuth] Redirecting to frontend:', redirectUrl.replace(/token=.*/, 'token=REDACTED'));
+
+  res.redirect(redirectUrl);
 };
 
 module.exports = {
