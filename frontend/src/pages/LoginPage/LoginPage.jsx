@@ -1,10 +1,10 @@
-<<<<<<< HEAD
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { toast } from 'sonner';
+import { apiRequest } from '../../lib/apiClient';
 
 import AuthLayout from '../../components/auth/AuthLayout/AuthLayout';
 import AuthCard from '../../components/auth/AuthCard/AuthCard';
@@ -14,7 +14,6 @@ import PasswordInput from '../../components/auth/PasswordInput/PasswordInput';
 import GoogleButton from '../../components/auth/GoogleButton/GoogleButton';
 import AuthDivider from '../../components/auth/AuthDivider/AuthDivider';
 
-// Zod Validation Schema for Login
 const loginSchema = z.object({
   email: z
     .string()
@@ -44,13 +43,21 @@ const LoginPage = () => {
     },
   });
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     setIsSubmitting(true);
-    setTimeout(() => {
-      setIsSubmitting(false);
+    try {
+      const res = await apiRequest('/auth/login', {
+        method: 'POST',
+        body: JSON.stringify({ email: data.email, password: data.password }),
+      });
+      localStorage.setItem('globetrotter_token', res.data.token);
       toast.success('Welcome back! Navigating to your dashboard...');
       navigate('/dashboard');
-    }, 400);
+    } catch (err) {
+      toast.error(err.message || 'Login failed. Please check your credentials.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -62,7 +69,6 @@ const LoginPage = () => {
         />
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
-          {/* Email Input */}
           <FormField
             id="email"
             label="Email"
@@ -73,7 +79,6 @@ const LoginPage = () => {
             error={errors.email}
           />
 
-          {/* Password Input */}
           <PasswordInput
             id="password"
             label="Password"
@@ -83,7 +88,6 @@ const LoginPage = () => {
             error={errors.password}
           />
 
-          {/* Options Row: Remember Me & Forgot Password */}
           <div className="flex items-center justify-between text-xs sm:text-sm">
             <label className="flex items-center gap-2 cursor-pointer text-slate-600 hover:text-slate-900 select-none">
               <input
@@ -102,7 +106,6 @@ const LoginPage = () => {
             </Link>
           </div>
 
-          {/* Submit Button */}
           <button
             type="submit"
             disabled={isSubmitting}
@@ -114,10 +117,8 @@ const LoginPage = () => {
 
         <AuthDivider text="OR" />
 
-        {/* Google OAuth UI Button */}
         <GoogleButton text="Continue with Google" />
 
-        {/* Link to Signup */}
         <p className="mt-6 text-center text-xs sm:text-sm text-slate-600">
           Don't have an account?{' '}
           <Link
@@ -129,18 +130,6 @@ const LoginPage = () => {
         </p>
       </AuthCard>
     </AuthLayout>
-=======
-import React from 'react';
-
-const LoginPage = () => {
-  return (
-    <div className="flex min-h-screen items-center justify-center bg-slate-50">
-      <div className="text-center">
-        <h1 className="text-2xl font-bold text-slate-900">Login / Signup</h1>
-        <p className="mt-2 text-slate-600">Authentication page coming soon.</p>
-      </div>
-    </div>
->>>>>>> 5c3f867 (feat:landing page backend)
   );
 };
 
