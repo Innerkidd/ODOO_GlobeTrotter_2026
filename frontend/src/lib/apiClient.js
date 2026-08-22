@@ -9,11 +9,20 @@ export async function apiRequest(path, options = {}) {
     ...options.headers,
   };
 
-  const res = await fetch(`${API_BASE_URL}${path}`, { ...options, headers });
-  const data = await res.json();
+  const formattedPath = path.startsWith('/') ? path : `/${path}`;
+
+  const res = await fetch(`${API_BASE_URL}${formattedPath}`, { ...options, headers });
+  
+  const text = await res.text();
+  let data;
+  try {
+    data = text ? JSON.parse(text) : {};
+  } catch {
+    data = { message: text || `Server error (${res.status})` };
+  }
 
   if (!res.ok || data.success === false) {
-    throw new Error(data.message || 'Something went wrong');
+    throw new Error(data.message || `Request failed with status ${res.status}`);
   }
 
   return data;

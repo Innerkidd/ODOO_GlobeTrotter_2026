@@ -1,18 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Upload, X } from 'lucide-react';
 
 const CoverPhotoUpload = ({ onFileSelect, error }) => {
   const [previewUrl, setPreviewUrl] = useState(null);
   const [fileName, setFileName] = useState('');
   const [fileError, setFileError] = useState('');
-
-  useEffect(() => {
-    return () => {
-      if (previewUrl) {
-        URL.revokeObjectURL(previewUrl);
-      }
-    };
-  }, [previewUrl]);
 
   const handleFileChange = (e) => {
     const file = e.target.files?.[0];
@@ -30,22 +22,20 @@ const CoverPhotoUpload = ({ onFileSelect, error }) => {
       return;
     }
 
-    if (previewUrl) {
-      URL.revokeObjectURL(previewUrl);
-    }
-
-    const newPreviewUrl = URL.createObjectURL(file);
-    setPreviewUrl(newPreviewUrl);
-    setFileName(file.name);
-    if (onFileSelect) {
-      onFileSelect(file, newPreviewUrl);
-    }
+    // Use FileReader for persistent base64 data URL
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const base64DataUrl = reader.result;
+      setPreviewUrl(base64DataUrl);
+      setFileName(file.name);
+      if (onFileSelect) {
+        onFileSelect(file, base64DataUrl);
+      }
+    };
+    reader.readAsDataURL(file);
   };
 
   const handleRemove = () => {
-    if (previewUrl) {
-      URL.revokeObjectURL(previewUrl);
-    }
     setPreviewUrl(null);
     setFileName('');
     setFileError('');

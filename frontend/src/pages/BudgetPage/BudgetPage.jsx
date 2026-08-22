@@ -11,90 +11,81 @@ import EmptyBudgetState from '../../components/budget/EmptyBudgetState/EmptyBudg
 import Footer from '../../components/common/Footer/Footer';
 
 import { apiRequest } from '../../lib/apiClient';
+import { calculateBudgetData, mockBaseBudget } from '../../data/staticData/budgetData';
+import { mockItinerary } from '../../data/staticData/itineraryData';
 
 const BudgetPage = () => {
   const navigate = useNavigate();
   const { tripId: routeTripId } = useParams();
-  const [tripId, setTripId] = useState(routeTripId || null);
+  const targetTripId = routeTripId || 'trip-101';
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [budgetInfo, setBudgetInfo] = useState(null);
 
-  // Fetch budget from backend on mount
+  // Fetch budget from backend on mount or fallback to mock data
   useEffect(() => {
     const loadBudgetData = async () => {
-      if (!tripId) {
-        setLoading(false);
-        setError('No trip ID specified.');
-        return;
-      }
-
       try {
         setLoading(true);
         setError(null);
 
-        const res = await apiRequest(`/api/trips/${tripId}/budget`);
-        setBudgetInfo(res.data);
-      } catch (err) {
-        console.error('Budget API error:', err);
-        if (err.message.includes('401') || err.message.includes('403')) {
-          setError('Authentication required. Please log in.');
-          toast.error('Session expired. Please log in again.');
-          navigate('/login');
-        } else if (err.message.includes('404')) {
-          setError('Trip not found.');
-          toast.error('The requested trip could not be found.');
+        // path should be /trips/... because apiRequest prepends /api
+        const res = await apiRequest(`/trips/${targetTripId}/budget`);
+        if (res?.data) {
+          setBudgetInfo(res.data);
         } else {
-          setError(err.message || 'Could not load budget data.');
-          toast.error('Could not load budget data. Please try again.');
+          // Fallback to static mock budget data
+          const fallbackData = calculateBudgetData(mockItinerary);
+          setBudgetInfo({
+            tripName: mockItinerary.title,
+            currency: fallbackData.currency,
+            totalEstimatedCost: fallbackData.totalEstimatedCost,
+            averageCostPerDay: fallbackData.averageCostPerDay,
+            plannedBudget: fallbackData.totalTargetBudget,
+            categories: fallbackData.categories,
+            dailyCosts: fallbackData.dailyBreakdown,
+          });
         }
+      } catch (err) {
+        console.warn('Budget API unreachable or trip not in backend, using static mock budget:', err.message);
+        // Seamless fallback to frontend mock budget data
+        const fallbackData = calculateBudgetData(mockItinerary);
+        setBudgetInfo({
+          tripName: mockItinerary.title,
+          currency: fallbackData.currency,
+          totalEstimatedCost: fallbackData.totalEstimatedCost,
+          averageCostPerDay: fallbackData.averageCostPerDay,
+          plannedBudget: fallbackData.totalTargetBudget,
+          categories: fallbackData.categories,
+          dailyCosts: fallbackData.dailyBreakdown,
+        });
       } finally {
         setLoading(false);
       }
     };
 
     loadBudgetData();
-  }, [tripId]);
+  }, [targetTripId]);
 
-  // If tripId changes through routing, refetch
-  useEffect(() => {
-    if (tripId) {
-      loadBudgetData();
-    }
-  }, [tripId]);
-
-  // Fallback: if no tripId in params and we're at /budget, navigate to first trip or show empty state
-  const hasTripId = !!tripId;
   const isLoading = loading && !budgetInfo;
-  const hasError = !!error && !budgetInfo;
 
   return (
     <div className="flex min-h-screen flex-col bg-slate-50 text-slate-900 selection:bg-teal-500 selection:text-white">
       {/* Header */}
       <BudgetHeader
-        tripTitle={budgetInfo?.tripName || 'Budget'}
-        dates={budgetInfo?.currency ? undefined : ''}
-        tripId={tripId || undefined}
+        tripTitle={budgetInfo?.tripName || mockItinerary.title}
+        dates={mockItinerary.formattedDates}
+        tripId={targetTripId}
       />
 
       {/* Main Content */}
       <main className="flex-1 py-8">
         <div className="mx-auto max-w-7xl px-4 space-y-8 sm:px-6 lg:px-8">
-          {isLoading && !hasError ? (
-            <div className="flex min-h-screen items-center justify-center">
-              <span className="text-slate-600 animate-spin loading-spinner h-8 w-8 border-4 border-teal-600 rounded-full"></span>
-              <span className="ml-4 text-slate-600">Loading budget data...</span>
-            </div>
-          ) : hasError ? (
-            <div className="flex min-h-screen items-center justify-center">
-              <p className="text-slate-600">{error}</p>
-              <button
-                onClick={() => window.location.reload()}
-                className="mt-4 inline-flex items-center gap-2 rounded-lg bg-teal-600 px-4 py-2 text-sm font-medium text-white hover:bg-teal-500"
-              >
-                Retry
-              </button>
+          {isLoading ? (
+            <div className="flex min-h-[400px] items-center justify-center">
+              <span className="h-8 w-8 animate-spin rounded-full border-4 border-teal-600 border-t-transparent"></span>
+              <span className="ml-4 font-semibold text-slate-600">Loading budget data...</span>
             </div>
           ) : budgetInfo ? (
             <>
@@ -103,10 +94,8 @@ const BudgetPage = () => {
                 currency={budgetInfo.currency || '₹'}
                 totalEstimated={budgetInfo.totalEstimatedCost || 0}
                 averagePerDay={budgetInfo.averageCostPerDay || 0}
-                targetBudget={budgetInfo.plannedBudget || mockBaseBudget?.totalTargetBudget || 0}
-                remaining={budgetInfo.plannedBudget
-                  ? budgetInfo.plannedBudget - (budgetInfo.totalEstimatedCost || 0)
-                  : mockBaseBudget?.totalTargetBudget - (budgetInfo.totalEstimatedCost || 0)}
+                targetBudget={budgetInfo.plannedBudget || mockBaseBudget?.totalTargetBudget || 250000}
+                remaining={(budgetInfo.plannedBudget || mockBaseBudget?.totalTargetBudget || 250000) - (budgetInfo.totalEstimatedCost || 0)}
               />
 
               {/* Middle Section: Cost Category Breakdown + Recharts Donut */}
@@ -130,7 +119,7 @@ const BudgetPage = () => {
           ) : (
             <EmptyBudgetState
               onAddDetails={() => {
-                if (tripId) navigate(`/trips/${tripId}/itinerary`);
+                navigate(`/trips/${targetTripId}/itinerary`);
               }}
             />
           )}

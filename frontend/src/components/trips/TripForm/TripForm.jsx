@@ -34,14 +34,14 @@ const getInputClassName = (error) =>
       : 'border-slate-300 focus:border-teal-600 focus:ring-2 focus:ring-teal-500/20'
   }`;
 
-const TripForm = () => {
+const TripForm = ({ onSubmit: externalOnSubmit, isSubmitting: externalIsSubmitting }) => {
   const navigate = useNavigate();
   const [coverPhotoPreviewUrl, setCoverPhotoPreviewUrl] = useState(null);
 
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting: internalIsSubmitting },
   } = useForm({
     resolver: zodResolver(createTripSchema),
     defaultValues: {
@@ -56,7 +56,16 @@ const TripForm = () => {
     setCoverPhotoPreviewUrl(previewUrl);
   };
 
-  const onSubmit = (data) => {
+  const handleFormSubmit = async (data) => {
+    if (externalOnSubmit) {
+      await externalOnSubmit({
+        ...data,
+        coverPhotoPreviewUrl,
+      });
+      return;
+    }
+
+    // Fallback if no external submit prop provided
     const tripId = crypto.randomUUID();
     const tripDraft = {
       id: tripId,
@@ -78,8 +87,10 @@ const TripForm = () => {
     navigate('/dashboard');
   };
 
+  const isFormSubmitting = externalIsSubmitting || internalIsSubmitting;
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+    <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
       {/* 1. Trip Name */}
       <FormField
         id="tripName"
@@ -108,7 +119,7 @@ const TripForm = () => {
       <CoverPhotoUpload onFileSelect={handleCoverPhotoSelect} />
 
       {/* 5. Actions */}
-      <TripActions onCancel={handleCancel} isSubmitting={isSubmitting} />
+      <TripActions onCancel={handleCancel} isSubmitting={isFormSubmitting} />
     </form>
   );
 };
