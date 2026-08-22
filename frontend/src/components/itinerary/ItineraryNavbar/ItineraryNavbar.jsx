@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { Compass, ArrowLeft, Pencil } from 'lucide-react';
+import { Compass, ArrowLeft, Pencil, Wallet } from 'lucide-react';
 
 const ItineraryNavbar = ({ tripTitle = 'Trip Itinerary' }) => {
   const navigate = useNavigate();
@@ -46,8 +46,18 @@ const ItineraryNavbar = ({ tripTitle = 'Trip Itinerary' }) => {
           </span>
         </div>
 
-        {/* RIGHT: Edit Itinerary Action */}
-        <div>
+        {/* RIGHT: Actions */}
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => navigate(`/trips/${targetTripId}/budget`)}
+            className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs sm:text-sm font-semibold text-slate-700 shadow-xs transition-all hover:bg-slate-50 hover:text-teal-700 cursor-pointer"
+            aria-label="View Budget"
+          >
+            <Wallet className="h-3.5 w-3.5 text-teal-600" />
+            <span>Budget</span>
+          </button>
+
           <button
             type="button"
             onClick={() => navigate(`/trips/${targetTripId}/itinerary`)}

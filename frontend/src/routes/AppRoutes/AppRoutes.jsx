@@ -10,6 +10,7 @@ import DashboardPage from '../../pages/DashboardPage/DashboardPage';
 import CreateTripPage from '../../pages/CreateTripPage/CreateTripPage';
 import ItineraryBuilderPage from '../../pages/ItineraryBuilderPage/ItineraryBuilderPage';
 import ItineraryViewPage from '../../pages/ItineraryViewPage/ItineraryViewPage';
+import BudgetPage from '../../pages/BudgetPage/BudgetPage';
 
 const AppRoutes = () => {
   return (
@@ -28,6 +29,10 @@ const AppRoutes = () => {
       {/* Itinerary View Routes */}
       <Route path="/trips/:tripId/itinerary/view" element={<ItineraryViewPage />} />
       <Route path="/itinerary/view" element={<ItineraryViewPage />} />
+
+      {/* Budget Routes */}
+      <Route path="/trips/:tripId/budget" element={<BudgetPage />} />
+      <Route path="/budget" element={<BudgetPage />} />
 
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

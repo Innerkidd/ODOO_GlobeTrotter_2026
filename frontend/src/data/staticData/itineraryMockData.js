@@ -11,35 +11,35 @@ export const mockCities = [
 
 export const mockActivitiesByCity = {
   Paris: [
-    { id: 'act-p1', name: 'Eiffel Tower Summit Tour', category: 'Sightseeing', duration: '2-3 hrs', cost: '€35' },
-    { id: 'act-p2', name: 'Louvre Museum Guided Walk', category: 'Culture', duration: '3 hrs', cost: '€22' },
-    { id: 'act-p3', name: 'Seine River Sunset Cruise', category: 'Sightseeing', duration: '1.5 hrs', cost: '€18' },
-    { id: 'act-p4', name: 'Montmartre Food & Bakery Tour', category: 'Food & Drink', duration: '2.5 hrs', cost: '€45' },
+    { id: 'act-p1', name: 'Eiffel Tower Summit Tour', category: 'Sightseeing', duration: '2-3 hrs', cost: '₹3,100' },
+    { id: 'act-p2', name: 'Louvre Museum Guided Walk', category: 'Culture', duration: '3 hrs', cost: '₹2,200' },
+    { id: 'act-p3', name: 'Seine River Sunset Cruise', category: 'Sightseeing', duration: '1.5 hrs', cost: '₹1,800' },
+    { id: 'act-p4', name: 'Montmartre Food & Bakery Tour', category: 'Food & Drink', duration: '2.5 hrs', cost: '₹3,900' },
   ],
   Rome: [
-    { id: 'act-r1', name: 'Colosseum & Roman Forum Tour', category: 'Culture', duration: '3 hrs', cost: '€30' },
-    { id: 'act-r2', name: 'Vatican Museums & Sistine Chapel', category: 'Culture', duration: '3.5 hrs', cost: '€38' },
-    { id: 'act-r3', name: 'Trastevere Evening Pizza & Wine Walk', category: 'Food & Drink', duration: '2 hrs', cost: '€40' },
+    { id: 'act-r1', name: 'Colosseum & Roman Forum Tour', category: 'Culture', duration: '3 hrs', cost: '₹3,400' },
+    { id: 'act-r2', name: 'Vatican Museums & Sistine Chapel', category: 'Culture', duration: '3.5 hrs', cost: '₹3,200' },
+    { id: 'act-r3', name: 'Trastevere Evening Pizza & Wine Walk', category: 'Food & Drink', duration: '2 hrs', cost: '₹3,500' },
     { id: 'act-r4', name: 'Trevi Fountain & Spanish Steps Stroll', category: 'Sightseeing', duration: '1.5 hrs', cost: 'Free' },
   ],
   Tokyo: [
     { id: 'act-t1', name: 'Senso-ji Temple & Asakusa Walk', category: 'Culture', duration: '2 hrs', cost: 'Free' },
-    { id: 'act-t2', name: 'Shibuya Crossing & Harajuku Food Tasting', category: 'Food & Drink', duration: '3 hrs', cost: '¥4,500' },
-    { id: 'act-t3', name: 'teamLab Planets Digital Art Exhibition', category: 'Culture', duration: '2 hrs', cost: '¥3,800' },
-    { id: 'act-t4', name: 'Tokyo Skytree Observation Deck', category: 'Sightseeing', duration: '1.5 hrs', cost: '¥2,700' },
+    { id: 'act-t2', name: 'Shibuya Crossing & Harajuku Food Tasting', category: 'Food & Drink', duration: '3 hrs', cost: '₹2,500' },
+    { id: 'act-t3', name: 'teamLab Planets Digital Art Exhibition', category: 'Culture', duration: '2 hrs', cost: '₹2,100' },
+    { id: 'act-t4', name: 'Tokyo Skytree Observation Deck', category: 'Sightseeing', duration: '1.5 hrs', cost: '₹1,500' },
   ],
   Barcelona: [
-    { id: 'act-b1', name: 'Sagrada Família Fast-Track Entry', category: 'Culture', duration: '2 hrs', cost: '€26' },
-    { id: 'act-b2', name: 'Park Güell & Gaudi Architecture Walk', category: 'Sightseeing', duration: '2.5 hrs', cost: '€10' },
-    { id: 'act-b3', name: 'Gothic Quarter Tapas & Sangria Night', category: 'Food & Drink', duration: '3 hrs', cost: '€35' },
+    { id: 'act-b1', name: 'Sagrada Família Fast-Track Entry', category: 'Culture', duration: '2 hrs', cost: '₹2,700' },
+    { id: 'act-b2', name: 'Park Güell & Gaudi Architecture Walk', category: 'Sightseeing', duration: '2.5 hrs', cost: '₹1,000' },
+    { id: 'act-b3', name: 'Gothic Quarter Tapas & Sangria Night', category: 'Food & Drink', duration: '3 hrs', cost: '₹3,200' },
   ],
   Bali: [
-    { id: 'act-ba1', name: 'Ubud Rice Terrace & Jungle Swing', category: 'Adventure', duration: '4 hrs', cost: '$25' },
-    { id: 'act-ba2', name: 'Tanah Lot Temple Sunset Experience', category: 'Sightseeing', duration: '2 hrs', cost: '$15' },
+    { id: 'act-ba1', name: 'Ubud Rice Terrace & Jungle Swing', category: 'Adventure', duration: '4 hrs', cost: '₹2,000' },
+    { id: 'act-ba2', name: 'Tanah Lot Temple Sunset Experience', category: 'Sightseeing', duration: '2 hrs', cost: '₹1,200' },
   ],
   DEFAULT: [
     { id: 'act-d1', name: 'City Center Guided Walking Tour', category: 'Sightseeing', duration: '2 hrs', cost: 'Free' },
-    { id: 'act-d2', name: 'Local Culinary & Market Experience', category: 'Food & Drink', duration: '2.5 hrs', cost: '$30' },
-    { id: 'act-d3', name: 'Historic Landmark Exploration', category: 'Culture', duration: '2 hrs', cost: '$15' },
+    { id: 'act-d2', name: 'Local Culinary & Market Experience', category: 'Food & Drink', duration: '2.5 hrs', cost: '₹2,500' },
+    { id: 'act-d3', name: 'Historic Landmark Exploration', category: 'Culture', duration: '2 hrs', cost: '₹1,200' },
   ],
 };
