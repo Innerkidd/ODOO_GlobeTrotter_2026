@@ -18,7 +18,7 @@ const DashboardPage = () => {
   const fetchDashboard = () => {
     const token = localStorage.getItem('globetrotter_token');
     if (!token) {
-      navigate('/login');
+      setLoading(false);
       return;
     }
     setLoading(true);
@@ -28,7 +28,6 @@ const DashboardPage = () => {
       .catch((err) => {
         if (err.message === 'Invalid token.' || err.message === 'Access denied. No token provided.' || err.message === 'Token expired.') {
           localStorage.removeItem('globetrotter_token');
-          navigate('/login');
           return;
         }
         setError(err.message);
@@ -45,13 +44,11 @@ const DashboardPage = () => {
   };
 
   const handleViewTrip = (trip) => {
-    toast.info(`Opening details for "${trip.title}". Itinerary builder will be connected in future updates.`, {
-      duration: 4000,
-    });
+    navigate(`/trips/${trip.id}/itinerary/view`);
   };
 
   const handleSelectDestination = (dest) => {
-    toast.info(`Selected "${dest.city}, ${dest.country}". City exploration will be connected in future updates.`, {
+    toast.info(`Selected "${dest.city || dest.name}, ${dest.country}". City exploration will be connected in future updates.`, {
       duration: 4000,
     });
   };
@@ -90,22 +87,6 @@ const DashboardPage = () => {
         <div className="text-center">
           <div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-4 border-teal-500 border-t-transparent" />
           <p className="text-sm text-slate-500">Loading dashboard...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-slate-50">
-        <div className="text-center">
-          <p className="text-sm font-medium text-red-600">{error}</p>
-          <button
-            onClick={fetchDashboard}
-            className="mt-3 rounded-lg bg-teal-600 px-4 py-2 text-sm font-semibold text-white hover:bg-teal-500 cursor-pointer"
-          >
-            Retry
-          </button>
         </div>
       </div>
     );

@@ -1,6 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { ArrowRight, MapPin } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { ArrowRight, MapPin, Sparkles } from 'lucide-react';
 
 const Hero = () => {
   const [destination, setDestination] = useState('');
@@ -10,6 +10,7 @@ const Hero = () => {
   const [showResults, setShowResults] = useState(false);
   const [loading, setLoading] = useState(false);
   const searchRef = useRef(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetch('/api/destinations/popular')
@@ -69,6 +70,14 @@ const Hero = () => {
     <section className="relative overflow-hidden py-12 sm:py-16 lg:py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto flex flex-col items-center text-center max-w-3xl">
+          
+          {/* Top Pill Tag */}
+          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-teal-200 bg-teal-50/80 px-3.5 py-1.5 text-xs font-semibold text-teal-800 backdrop-blur-xs">
+            <Sparkles className="h-3.5 w-3.5 text-teal-600" />
+            <span>Personalized Travel Planning</span>
+          </div>
+
+          {/* Headline */}
           <h1 className="font-heading text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl sm:leading-[1.15] lg:text-6xl">
             Plan Your Journey.{' '}
             <span className="bg-gradient-to-r from-teal-600 via-emerald-600 to-teal-700 bg-clip-text text-transparent">
@@ -81,7 +90,7 @@ const Hero = () => {
           </p>
 
           <div className="mt-8 w-full max-w-xl" ref={searchRef}>
-            <form onSubmit={(e) => e.preventDefault()} className="relative flex items-center rounded-2xl border border-slate-200 bg-white p-2 shadow-lg shadow-slate-200/50 transition-all focus-within:border-teal-500 focus-within:ring-4 focus-within:ring-teal-500/10">
+            <form onSubmit={(e) => { e.preventDefault(); navigate('/login'); }} className="relative flex items-center rounded-2xl border border-slate-200 bg-white p-2 shadow-lg shadow-slate-200/50 transition-all focus-within:border-teal-500 focus-within:ring-4 focus-within:ring-teal-500/10">
               <div className="flex items-center pl-3 pr-2 text-slate-400">
                 <MapPin className="h-5 w-5 text-teal-600" />
               </div>
@@ -136,7 +145,7 @@ const Hero = () => {
                 <span className="text-slate-400">Popular:</span>
                 {popularDestinations.map((dest) => (
                   <button
-                    key={dest.id}
+                    key={dest.id || dest.name}
                     type="button"
                     onClick={() => handleChipClick(dest.name)}
                     className={`rounded-full border px-3 py-1 transition-all cursor-pointer active:scale-95 ${
