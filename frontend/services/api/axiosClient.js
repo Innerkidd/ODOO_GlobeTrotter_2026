@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const TOKEN_KEY = 'globetrotter-jwt';
+const TOKEN_KEY = 'globetrotter_token';
 
 export const getStoredToken = () => localStorage.getItem(TOKEN_KEY);
 export const setStoredToken = (token) => localStorage.setItem(TOKEN_KEY, token);
