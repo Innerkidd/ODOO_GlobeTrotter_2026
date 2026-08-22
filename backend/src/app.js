@@ -44,6 +44,7 @@ app.use('/api/dashboard', require('./routes/dashboard'));
 app.use('/api/trips', require('./routes/trips'));
 app.use('/api/destinations', require('./routes/cities'));
 app.use('/api/activities', require('./routes/activities'));
+app.use('/api/calendar', require('./routes/calendar'));
 app.use('/api/itinerary', require('./routes/itinerary'));
 app.use('/api/budget', require('./routes/budget'));
 app.use('/api/sharing', require('./routes/sharing'));
