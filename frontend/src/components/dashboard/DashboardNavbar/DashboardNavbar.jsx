@@ -1,9 +1,15 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { Compass, User, LogOut } from 'lucide-react';
-import { mockUserData } from '../../../data/staticData/dashboardData';
+import { Link, useNavigate } from 'react-router-dom';
+import { Compass, LogOut } from 'lucide-react';
 
-const DashboardNavbar = () => {
+const DashboardNavbar = ({ userName = 'Traveler', avatarUrl = '' }) => {
+  const navigate = useNavigate();
+
+  const handleSignOut = () => {
+    localStorage.removeItem('globetrotter_token');
+    navigate('/login');
+  };
+
   return (
     <header className="sticky top-0 z-50 w-full border-b border-slate-200/80 bg-white/90 backdrop-blur-md transition-all">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
@@ -35,23 +41,23 @@ const DashboardNavbar = () => {
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2.5 rounded-full border border-slate-200 bg-slate-50 py-1 pl-1 pr-3 shadow-2xs">
             <img
-              src={mockUserData.avatarUrl}
-              alt={mockUserData.name}
+              src={avatarUrl}
+              alt={userName}
               className="h-7 w-7 rounded-full object-cover ring-1 ring-slate-300"
             />
             <span className="text-xs font-semibold text-slate-700 hidden sm:inline">
-              {mockUserData.name}
+              {userName}
             </span>
           </div>
 
-          <Link
-            to="/login"
-            className="inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-800 focus-visible:outline-2 focus-visible:outline-teal-600"
+          <button
+            onClick={handleSignOut}
+            className="inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-800 focus-visible:outline-2 focus-visible:outline-teal-600 cursor-pointer"
             title="Sign Out"
             aria-label="Sign Out"
           >
             <LogOut className="h-4 w-4" />
-          </Link>
+          </button>
         </div>
 
       </div>

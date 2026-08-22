@@ -1,10 +1,8 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { ArrowRight, Compass } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
 
 const CTA = () => {
-  const navigate = useNavigate();
-
   return (
     <section className="py-12 sm:py-16">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -21,15 +19,14 @@ const CTA = () => {
           </h2>
 
           <div className="mt-8 flex justify-center">
-            <button
-              type="button"
-              onClick={() => navigate('/login')}
-              className="group inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-teal-500 to-emerald-500 px-7 py-4 text-base font-semibold text-white shadow-lg shadow-teal-500/25 transition-all hover:from-teal-400 hover:to-emerald-400 hover:shadow-xl hover:shadow-teal-500/35 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-400 active:scale-95 cursor-pointer"
+            <Link
+              to="/login"
+              className="group inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-teal-500 to-emerald-500 px-7 py-4 text-base font-semibold text-white shadow-lg shadow-teal-500/25 transition-all hover:from-teal-400 hover:to-emerald-400 hover:shadow-xl hover:shadow-teal-500/35 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-400 active:scale-95"
               aria-label="Plan a Trip"
             >
               <span>Plan a Trip</span>
               <ArrowRight className="h-5 w-5 transition-transform duration-200 group-hover:translate-x-1" />
-            </button>
+            </Link>
           </div>
         </div>
       </div>

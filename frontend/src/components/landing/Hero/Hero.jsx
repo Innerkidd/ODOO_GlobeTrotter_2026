@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { ArrowRight, MapPin } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
 
 const Hero = () => {
   const [destination, setDestination] = useState('');
@@ -10,7 +10,6 @@ const Hero = () => {
   const [showResults, setShowResults] = useState(false);
   const [loading, setLoading] = useState(false);
   const searchRef = useRef(null);
-  const navigate = useNavigate();
 
   useEffect(() => {
     fetch('/api/destinations/popular')
@@ -66,10 +65,6 @@ const Hero = () => {
     setShowResults(false);
   };
 
-  const handlePlanTrip = () => {
-    navigate('/login');
-  };
-
   return (
     <section className="relative overflow-hidden py-12 sm:py-16 lg:py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -86,7 +81,7 @@ const Hero = () => {
           </p>
 
           <div className="mt-8 w-full max-w-xl" ref={searchRef}>
-            <form onSubmit={(e) => { e.preventDefault(); handlePlanTrip(); }} className="relative flex items-center rounded-2xl border border-slate-200 bg-white p-2 shadow-lg shadow-slate-200/50 transition-all focus-within:border-teal-500 focus-within:ring-4 focus-within:ring-teal-500/10">
+            <form onSubmit={(e) => e.preventDefault()} className="relative flex items-center rounded-2xl border border-slate-200 bg-white p-2 shadow-lg shadow-slate-200/50 transition-all focus-within:border-teal-500 focus-within:ring-4 focus-within:ring-teal-500/10">
               <div className="flex items-center pl-3 pr-2 text-slate-400">
                 <MapPin className="h-5 w-5 text-teal-600" />
               </div>
@@ -101,15 +96,14 @@ const Hero = () => {
                 placeholder="Where to next? (e.g. Tokyo, Paris, Amalfi)"
                 className="w-full bg-transparent px-2 py-2.5 text-slate-900 placeholder-slate-400 focus:outline-none text-base font-medium"
               />
-              <button
-                type="button"
-                onClick={handlePlanTrip}
+              <Link
+                to="/login"
                 className="group inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-teal-600 to-emerald-600 px-5 py-3 text-sm font-semibold text-white shadow-md shadow-teal-600/20 transition-all hover:from-teal-500 hover:to-emerald-500 hover:shadow-lg focus-visible:outline-2 focus-visible:outline-teal-600 active:scale-95 shrink-0 cursor-pointer"
                 aria-label="Plan a Trip"
               >
                 <span>Plan a Trip</span>
                 <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
-              </button>
+              </Link>
             </form>
 
             {showResults && searchResults.length > 0 && (
