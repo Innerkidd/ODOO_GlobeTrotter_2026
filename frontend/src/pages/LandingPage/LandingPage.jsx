@@ -2,7 +2,6 @@ import React from 'react';
 import Navbar from '../../components/common/Navbar/Navbar';
 import Hero from '../../components/landing/Hero/Hero';
 import FeatureCards from '../../components/landing/FeatureCards/FeatureCards';
-import CTA from '../../components/landing/CTA/CTA';
 import Footer from '../../components/common/Footer/Footer';
 
 const LandingPage = () => {
@@ -17,9 +16,6 @@ const LandingPage = () => {
 
         {/* 3. Three Feature Cards */}
         <FeatureCards />
-
-        {/* 4. Final CTA */}
-        <CTA />
       </main>
 
       {/* 5. Minimal Footer */}
