@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Compass, CalendarDays, MapPin, Pencil } from 'lucide-react';
+import { ArrowLeft, Compass, CalendarDays, MapPin, Pencil, Share2 } from 'lucide-react';
 
 const CalendarHeader = ({
   tripTitle = 'European Summer Journey',
@@ -63,8 +63,18 @@ const CalendarHeader = ({
           </div>
         </div>
 
-        {/* RIGHT: Edit Itinerary Action */}
-        <div>
+        {/* RIGHT: Actions */}
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => navigate(`/trips/${tripId}/share`)}
+            className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs sm:text-sm font-semibold text-slate-700 shadow-xs transition-all hover:bg-slate-50 hover:text-teal-700 cursor-pointer"
+            aria-label="Share Trip"
+          >
+            <Share2 className="h-3.5 w-3.5 text-teal-600" />
+            <span className="hidden sm:inline">Share</span>
+          </button>
+
           <button
             type="button"
             onClick={() => navigate(`/trips/${tripId}/itinerary`)}
@@ -72,7 +82,7 @@ const CalendarHeader = ({
             aria-label="Edit Itinerary"
           >
             <Pencil className="h-3.5 w-3.5" />
-            <span className="hidden sm:inline">Edit Itinerary</span>
+            <span className="hidden sm:inline">Edit</span>
           </button>
         </div>
 
