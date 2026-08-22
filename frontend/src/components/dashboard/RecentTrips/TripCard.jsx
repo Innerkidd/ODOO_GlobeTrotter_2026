@@ -14,9 +14,11 @@ const formatDateStr = (dateStr) => {
   }
 };
 
-const TripCard = ({ trip, onViewTrip }) => {
-  const [imgSrc, setImgSrc] = useState(trip.coverImage || DEFAULT_COVER_IMAGE);
+const TripCard = ({ trip = {}, onViewTrip }) => {
   const [imgError, setImgError] = useState(false);
+
+  const rawImage = trip.coverImage;
+  const displayImage = !imgError && rawImage ? rawImage : DEFAULT_COVER_IMAGE;
 
   const formattedStart = formatDateStr(trip.startDate);
   const formattedEnd = formatDateStr(trip.endDate);
@@ -24,21 +26,14 @@ const TripCard = ({ trip, onViewTrip }) => {
     ? trip.destinations.join(' · ')
     : `${trip.destinationCount || 0} stops`;
 
-  const handleImageError = () => {
-    if (!imgError) {
-      setImgError(true);
-      setImgSrc(DEFAULT_COVER_IMAGE);
-    }
-  };
-
   return (
     <div className="group flex flex-col overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-xs transition-all duration-300 hover:-translate-y-1 hover:border-teal-200 hover:shadow-md">
       {/* Cover Image Container */}
       <div className="relative h-44 w-full overflow-hidden bg-slate-100">
         <img
-          src={imgSrc || DEFAULT_COVER_IMAGE}
-          alt={trip.title}
-          onError={handleImageError}
+          src={displayImage}
+          alt={trip.title || 'Trip Cover'}
+          onError={() => setImgError(true)}
           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent" />
@@ -49,10 +44,12 @@ const TripCard = ({ trip, onViewTrip }) => {
             className={`rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-wider shadow-2xs backdrop-blur-xs ${
               trip.status === 'Upcoming'
                 ? 'bg-teal-500/90 text-white'
-                : 'bg-slate-800/90 text-slate-200'
+                : trip.status === 'Completed'
+                ? 'bg-slate-800/90 text-slate-200'
+                : 'bg-emerald-600/90 text-white'
             }`}
           >
-            {trip.status}
+            {trip.status || 'Upcoming'}
           </span>
         </div>
 

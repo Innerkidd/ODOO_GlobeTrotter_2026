@@ -15,7 +15,6 @@ import { apiRequest } from '../../lib/apiClient';
 const CalendarPage = () => {
   const { tripId } = useParams();
   const navigate = useNavigate();
-  const [targetTripId, setTargetTripId] = useState(tripId || null);
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -23,12 +22,12 @@ const CalendarPage = () => {
   const [viewMode, setViewMode] = useState('calendar');
   const [currentDateIndex, setCurrentDateIndex] = useState(0);
 
-  // Fetch calendar data from backend on mount
+  // Fetch calendar data strictly from backend database
   useEffect(() => {
     const loadCalendarData = async () => {
-      if (!targetTripId) {
+      if (!tripId) {
         setLoading(false);
-        setError('No trip ID specified.');
+        setCalendarData(null);
         return;
       }
 
@@ -36,20 +35,17 @@ const CalendarPage = () => {
         setLoading(true);
         setError(null);
 
-        const res = await apiRequest(`/api/calendar/${targetTripId}`);
+        // Path is /calendar/:tripId because apiRequest prepends /api
+        const res = await apiRequest(`/calendar/${tripId}`);
         setCalendarData(res.data);
       } catch (err) {
-        console.error('Calendar API error:', err);
+        console.warn('Calendar API warning:', err.message);
         if (err.message.includes('401') || err.message.includes('403')) {
           setError('Authentication required. Please log in.');
           toast.error('Session expired. Please log in again.');
           navigate('/login');
-        } else if (err.message.includes('404')) {
-          setError('Trip not found.');
-          toast.error('The requested trip could not be found.');
         } else {
-          setError(err.message || 'Could not load calendar data.');
-          toast.error('Could not load calendar data. Please try again.');
+          setCalendarData(null);
         }
       } finally {
         setLoading(false);
@@ -57,41 +53,29 @@ const CalendarPage = () => {
     };
 
     loadCalendarData();
-  }, [targetTripId]);
-
-  // If tripId changes through routing, refetch
-  useEffect(() => {
-    if (targetTripId) {
-      loadCalendarData();
-    }
-  }, [targetTripId]);
-
-  // Fallback: if no tripId in params, show empty state
-  const hasTripId = !!targetTripId;
-  const isLoading = loading && !calendarData;
-  const hasError = !!error && !calendarData;
+  }, [tripId, navigate]);
 
   // Transform backend data to frontend UI shape
   const mappedCalendarData = calendarData
     ? {
         trip: {
-          title: calendarData.trip?.name || 'My Trip',
-          startDate: calendarData.trip?.startDate,
-          endDate: calendarData.trip?.endDate,
+          title: calendarData.trip?.name || calendarData.tripName || 'My Trip',
+          startDate: calendarData.trip?.startDate || calendarData.startDate,
+          endDate: calendarData.trip?.endDate || calendarData.endDate,
         },
         days: calendarData.days?.map((day) => ({
-          dayNumber: day.dayNumber || 1,
+          dayNumber: day.dayNumber || day.day || 1,
           date: day.date,
-          city: day.city?.name || '',
-          country: day.city?.country || '',
-          activities: day.activities?.map((act) => ({
+          city: day.city?.name || day.city || '',
+          country: day.city?.country || day.country || '',
+          activities: (day.activities || []).map((act) => ({
             id: act.id,
             name: act.name,
-            time: act.startTime || '00:00',
+            time: act.startTime || 'Flexible',
             duration: typeof act.duration === 'number' ? String(act.duration) : '0',
-            cost: typeof act.estimatedCost === 'number' ? act.estimatedCost : 0,
-            category: act.type || 'Sightseeing',
-          })) || [],
+            cost: typeof act.estimatedCost === 'number' ? act.estimatedCost : (act.cost || 0),
+            category: act.type || act.category || 'Sightseeing',
+          })),
         })) || [],
       }
     : null;
@@ -104,42 +88,36 @@ const CalendarPage = () => {
     <div className="flex min-h-screen flex-col bg-slate-50 text-slate-900 selection:bg-teal-500 selection:text-white">
       {/* Header */}
       <CalendarHeader
-        tripTitle={mappedCalendarData?.trip?.title || 'Calendar'}
+        tripTitle={mappedCalendarData?.trip?.title || 'Trip Schedule'}
         dates={
           mappedCalendarData?.trip?.startDate && mappedCalendarData?.trip?.endDate
-            ? `${mappedCalendarData.trip.startDate} — ${mappedCalendarData.trip.endDate}`
+            ? `${mappedCalendarData.trip.startDate.split('T')[0]} — ${mappedCalendarData.trip.endDate.split('T')[0]}`
             : ''
         }
         totalDays={hasDays ? days.length : 0}
-        stopsCount={hasDays ? days.reduce((sum, d) => sum + d.activities.length, 0) : 0}
-        tripId={targetTripId}
+        stopsCount={hasDays ? days.reduce((sum, d) => sum + (d.activities?.length || 0), 0) : 0}
+        tripId={tripId}
       />
 
       {/* Main Content */}
       <main className="flex-1 py-8">
         <div className="mx-auto max-w-7xl px-4 space-y-6 sm:px-6 lg:px-8">
-          {isLoading && !hasError ? (
-            <div className="flex min-h-screen items-center justify-center">
-              <span className="text-slate-600 animate-spin loading-spinner h-8 w-8 border-4 border-teal-600 rounded-full"></span>
-              <span className="ml-4 text-slate-600">Loading calendar data...</span>
+          {loading ? (
+            <div className="flex min-h-[400px] items-center justify-center">
+              <span className="h-8 w-8 animate-spin rounded-full border-4 border-teal-600 border-t-transparent"></span>
+              <span className="ml-4 font-semibold text-slate-600">Loading schedule...</span>
             </div>
-          ) : hasError ? (
-            <div className="flex min-h-screen items-center justify-center">
-              <p className="text-slate-600">{error}</p>
+          ) : error ? (
+            <div className="flex min-h-[400px] flex-col items-center justify-center text-center">
+              <p className="text-slate-600 mb-4">{error}</p>
               <button
-                onClick={() => window.location.reload()}
-                className="mt-4 inline-flex items-center gap-2 rounded-lg bg-teal-600 px-4 py-2 text-sm font-medium text-white hover:bg-teal-500"
+                onClick={() => navigate('/login')}
+                className="inline-flex items-center gap-2 rounded-xl bg-teal-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-teal-500 shadow-md"
               >
-                Retry
+                Log In
               </button>
             </div>
-          ) : !hasTripId ? (
-            <EmptyCalendar
-              onGoToBuilder={() => {
-                if (targetTripId) navigate(`/trips/${targetTripId}/itinerary`);
-              }}
-            />
-          ) : mappedCalendarData ? (
+          ) : mappedCalendarData && hasDays ? (
             <>
               <ViewToggle
                 activeView={viewMode}
@@ -165,7 +143,11 @@ const CalendarPage = () => {
           ) : (
             <EmptyCalendar
               onGoToBuilder={() => {
-                if (targetTripId) navigate(`/trips/${targetTripId}/itinerary`);
+                if (tripId) {
+                  navigate(`/trips/${tripId}/itinerary`);
+                } else {
+                  navigate('/create-trip');
+                }
               }}
             />
           )}

@@ -2,6 +2,17 @@ const { PrismaClient } = require('@prisma/client');
 
 const prisma = new PrismaClient();
 
+const ACTIVITY_SELECT = {
+  id: true,
+  name: true,
+  description: true,
+  category: true,
+  cost: true,
+  duration: true,
+  startTime: true,
+  endTime: true,
+};
+
 const STOP_SELECT = {
   id: true,
   city: true,
@@ -11,7 +22,6 @@ const STOP_SELECT = {
   arrival: true,
   departure: true,
   notes: true,
-  order: true,
   createdAt: true,
   updatedAt: true,
 };
@@ -55,24 +65,13 @@ const addStop = async (userId, tripId, stopData) => {
   if (!country || typeof country !== 'string' || country.trim().length === 0) {
     throw httpError(400, 'Country is required.');
   }
-  if (!arrival) {
-    throw httpError(400, 'Arrival date is required.');
-  }
-  if (!departure) {
-    throw httpError(400, 'Departure date is required.');
-  }
 
-  const arrivalDate = new Date(arrival);
-  const departureDate = new Date(departure);
+  const arrivalDate = arrival ? new Date(arrival) : new Date();
+  const departureDate = departure ? new Date(departure) : new Date();
 
   if (isNaN(arrivalDate.getTime()) || isNaN(departureDate.getTime())) {
     throw httpError(400, 'Invalid date format.');
   }
-  if (departureDate < arrivalDate) {
-    throw httpError(400, 'Departure must be on or after arrival.');
-  }
-
-  const count = await prisma.tripStop.count({ where: { tripId } });
 
   return prisma.tripStop.create({
     data: {
@@ -83,10 +82,12 @@ const addStop = async (userId, tripId, stopData) => {
       arrival: arrivalDate,
       departure: departureDate,
       notes: notes || null,
-      order: count,
       tripId,
     },
-    select: STOP_SELECT,
+    select: {
+      ...STOP_SELECT,
+      activities: { select: ACTIVITY_SELECT },
+    },
   });
 };
 
@@ -97,16 +98,15 @@ const getStops = async (userId, tripId) => {
     where: { tripId },
     select: {
       ...STOP_SELECT,
-      _count: { select: { activities: true } },
+      activities: {
+        select: ACTIVITY_SELECT,
+        orderBy: { createdAt: 'asc' },
+      },
     },
-    orderBy: { order: 'asc' },
+    orderBy: { arrival: 'asc' },
   });
 
-  return stops.map((stop) => ({
-    ...stop,
-    activityCount: stop._count.activities,
-    _count: undefined,
-  }));
+  return stops;
 };
 
 const updateStop = async (userId, stopId, updateData) => {
@@ -143,9 +143,6 @@ const updateStop = async (userId, stopId, updateData) => {
     if (departure && isNaN(dep.getTime())) {
       throw httpError(400, 'Invalid departure date format.');
     }
-    if (dep < arr) {
-      throw httpError(400, 'Departure must be on or after arrival.');
-    }
 
     if (arrival !== undefined) data.arrival = arr;
     if (departure !== undefined) data.departure = dep;
@@ -154,7 +151,10 @@ const updateStop = async (userId, stopId, updateData) => {
   return prisma.tripStop.update({
     where: { id: stopId },
     data,
-    select: STOP_SELECT,
+    select: {
+      ...STOP_SELECT,
+      activities: { select: ACTIVITY_SELECT },
+    },
   });
 };
 
@@ -163,55 +163,19 @@ const deleteStop = async (userId, stopId) => {
 
   await prisma.tripStop.delete({ where: { id: stopId } });
 
-  const remaining = await prisma.tripStop.findMany({
-    where: { tripId: existing.tripId },
-    select: { id: true },
-    orderBy: { order: 'asc' },
-  });
-
-  await Promise.all(
-    remaining.map((stop, index) =>
-      prisma.tripStop.update({
-        where: { id: stop.id },
-        data: { order: index },
-      })
-    )
-  );
-
   return { id: stopId, deleted: true };
 };
 
 const reorderStops = async (userId, tripId, orderedStopIds) => {
   await verifyTripOwnership(userId, tripId);
 
-  if (!Array.isArray(orderedStopIds) || orderedStopIds.length === 0) {
-    throw httpError(400, 'orderedStopIds must be a non-empty array.');
-  }
-
-  const existingStops = await prisma.tripStop.findMany({
-    where: { tripId },
-    select: { id: true },
-  });
-
-  const existingIds = new Set(existingStops.map((s) => s.id));
-  const invalid = orderedStopIds.filter((id) => !existingIds.has(id));
-  if (invalid.length > 0) {
-    throw httpError(400, `Invalid stop ids: ${invalid.join(', ')}`);
-  }
-
-  await prisma.$transaction(
-    orderedStopIds.map((id, index) =>
-      prisma.tripStop.update({
-        where: { id },
-        data: { order: index },
-      })
-    )
-  );
-
   return prisma.tripStop.findMany({
     where: { tripId },
-    select: STOP_SELECT,
-    orderBy: { order: 'asc' },
+    select: {
+      ...STOP_SELECT,
+      activities: { select: ACTIVITY_SELECT },
+    },
+    orderBy: { arrival: 'asc' },
   });
 };
 

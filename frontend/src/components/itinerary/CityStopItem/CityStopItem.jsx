@@ -1,5 +1,5 @@
 import React from 'react';
-import { ChevronUp, ChevronDown, Trash2, Plus, Calendar, Compass } from 'lucide-react';
+import { ChevronUp, ChevronDown, Trash2, Plus, Compass } from 'lucide-react';
 import FormField from '../../auth/FormField/FormField';
 import ActivityItem from '../ActivityItem/ActivityItem';
 import EmptyState from '../../common/EmptyState/EmptyState';
@@ -7,8 +7,20 @@ import EmptyState from '../../common/EmptyState/EmptyState';
 const getInputClassName = () =>
   `w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2 text-sm text-slate-900 placeholder:text-slate-400 transition-all focus:border-teal-600 focus:outline-hidden focus:ring-2 focus:ring-teal-500/20`;
 
+// Helper to format ISO or raw dates to YYYY-MM-DD for HTML <input type="date" />
+const toInputDateFormat = (dateStr) => {
+  if (!dateStr) return '';
+  try {
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return dateStr;
+    return d.toISOString().split('T')[0];
+  } catch {
+    return dateStr;
+  }
+};
+
 const CityStopItem = ({
-  stop,
+  stop = {},
   index,
   totalStops,
   onMoveUp,
@@ -18,6 +30,23 @@ const CityStopItem = ({
   onOpenAddActivity,
   onRemoveActivity,
 }) => {
+  const cityName = stop.cityName || stop.city || 'City Stop';
+  const countryName = stop.country || '';
+  const activities = stop.activities || [];
+
+  const formattedStartDate = toInputDateFormat(stop.startDate || stop.arrival);
+  const formattedEndDate = toInputDateFormat(stop.endDate || stop.departure);
+
+  const handleStartDateChange = (e) => {
+    const val = e.target.value;
+    onUpdateDates(stop.id, val, formattedEndDate);
+  };
+
+  const handleEndDateChange = (e) => {
+    const val = e.target.value;
+    onUpdateDates(stop.id, formattedStartDate, val);
+  };
+
   return (
     <div className="rounded-2xl border border-slate-200/80 bg-white p-5 sm:p-6 shadow-sm space-y-5">
       {/* Header Row: Stop Index, City, Reorder & Delete Controls */}
@@ -27,8 +56,8 @@ const CityStopItem = ({
             {index + 1}
           </span>
           <div>
-            <h3 className="font-heading text-lg font-bold text-slate-900">{stop.city}</h3>
-            <p className="text-xs text-slate-500">{stop.country}</p>
+            <h3 className="font-heading text-lg font-bold text-slate-900">{cityName}</h3>
+            {countryName && <p className="text-xs text-slate-500">{countryName}</p>}
           </div>
         </div>
 
@@ -70,8 +99,8 @@ const CityStopItem = ({
           <input
             id={`startDate-${stop.id}`}
             type="date"
-            value={stop.startDate || ''}
-            onChange={(e) => onUpdateDates(stop.id, 'startDate', e.target.value)}
+            value={formattedStartDate}
+            onChange={handleStartDateChange}
             className={getInputClassName()}
           />
         </FormField>
@@ -80,8 +109,8 @@ const CityStopItem = ({
           <input
             id={`endDate-${stop.id}`}
             type="date"
-            value={stop.endDate || ''}
-            onChange={(e) => onUpdateDates(stop.id, 'endDate', e.target.value)}
+            value={formattedEndDate}
+            onChange={handleEndDateChange}
             className={getInputClassName()}
           />
         </FormField>
@@ -91,7 +120,7 @@ const CityStopItem = ({
       <div className="pt-2">
         <div className="flex items-center justify-between mb-3">
           <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500">
-            Activities ({stop.activities.length})
+            Activities ({activities.length})
           </h4>
           <button
             type="button"
@@ -103,9 +132,9 @@ const CityStopItem = ({
           </button>
         </div>
 
-        {stop.activities.length > 0 ? (
+        {activities.length > 0 ? (
           <div className="space-y-2">
-            {stop.activities.map((act) => (
+            {activities.map((act) => (
               <ActivityItem
                 key={act.id}
                 activity={act}
@@ -117,7 +146,7 @@ const CityStopItem = ({
           <EmptyState
             icon={Compass}
             title="No activities added"
-            description={`Discover and add activities for your stay in ${stop.city}.`}
+            description={`Discover and add activities for your stay in ${cityName}.`}
             actionLabel="Add Activity"
             onAction={() => onOpenAddActivity(stop)}
           />
