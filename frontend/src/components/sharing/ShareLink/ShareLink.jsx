@@ -1,14 +1,37 @@
-import React, { useState } from 'react';
-import { Copy, Check, Link as LinkIcon } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import { toast } from 'sonner';
 
-const ShareLink = ({ tripId = 'demo-trip' }) => {
+import { apiClient } from '../../services/api/apiClient';
+
+const ShareLink = ({ tripId }) => {
+  const [shareUrl, setShareUrl] = useState('');
+  const [shareId, setShareId] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [copied, setCopied] = useState(false);
-  const publicUrl = `${window.location.origin}/public/trips/${tripId}`;
+
+  // Fetch share link from backend
+  useEffect(() => {
+    const fetchShareLink = async () => {
+      try {
+        const res = await apiClient.post(`/api/trips/${tripId}/share`);
+        setShareUrl(res.data.shareUrl);
+        setShareId(res.data.shareId);
+        setLoading(false);
+      } catch (err) {
+        console.error('Share API error:', err);
+        setError(err.message || 'Could not generate share link.');
+        setLoading(false);
+      }
+    };
+
+    fetchShareLink();
+  }, [tripId]);
 
   const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText(publicUrl);
+      await navigator.clipboard.writeText(shareUrl);
       setCopied(true);
       toast.success('Link copied to clipboard!');
       setTimeout(() => setCopied(false), 2500);
@@ -17,11 +40,29 @@ const ShareLink = ({ tripId = 'demo-trip' }) => {
     }
   };
 
+  if (loading) {
+    return (
+      <div className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm space-y-3">
+        <span className="text-slate-600 animate-spin">Generating share link...</span>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm space-y-3">
+        <p className="text-slate-600">{error}</p>
+      </div>
+    );
+  }
+
   return (
     <div className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm space-y-3">
       <div className="flex items-center justify-between">
         <label htmlFor="shareable-url" className="text-xs font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
-          <LinkIcon className="h-3.5 w-3.5 text-teal-600" />
+          <svg className="h-3.5 w-3.5 text-teal-600" aria-hidden="true" focusable="true">
+            <use href="#icon-link" />
+          </svg>
           Shareable Link
         </label>
         <span className="text-[11px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200/60 px-2 py-0.5 rounded-full">
@@ -34,7 +75,7 @@ const ShareLink = ({ tripId = 'demo-trip' }) => {
           id="shareable-url"
           type="text"
           readOnly
-          value={publicUrl}
+          value={shareUrl || `${window.location.origin}/public/trips/${shareId || 'demo-trip}'}`
           className="w-full rounded-xl border border-slate-300 bg-slate-50 px-3.5 py-2.5 text-xs sm:text-sm font-mono text-slate-800 focus:outline-hidden"
         />
         <button
@@ -44,12 +85,16 @@ const ShareLink = ({ tripId = 'demo-trip' }) => {
         >
           {copied ? (
             <>
-              <Check className="h-4 w-4 text-white" />
+              <svg className="h-4 w-4 text-white" aria-hidden="true" focusable="true">
+                <use href="#icon-check" />
+              </svg>
               <span>Copied!</span>
             </>
           ) : (
             <>
-              <Copy className="h-4 w-4" />
+              <svg className="h-4 w-4" aria-hidden="true" focusable="true">
+                <use href="#icon-copy" />
+              </svg>
               <span>Copy Link</span>
             </>
           )}
