@@ -70,11 +70,21 @@ const LoginPage = () => {
             error={errors.email}
           />
 
-          {/* Password Input */}
+          {/* Password Input with Forgot Password link */}
           <div>
+            <div className="flex items-center justify-between mb-1">
+              <label htmlFor="password" className="block text-sm font-semibold text-slate-700">
+                Password
+              </label>
+              <Link
+                to="/forgot-password"
+                className="text-xs font-semibold text-teal-600 transition-colors hover:text-teal-700 hover:underline focus-visible:outline-2 focus-visible:outline-teal-600 rounded-sm"
+              >
+                Forgot password?
+              </Link>
+            </div>
             <PasswordInput
               id="password"
-              label="Password"
               placeholder="••••••••"
               autoComplete="current-password"
               register={register}
@@ -86,7 +96,7 @@ const LoginPage = () => {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full rounded-xl bg-gradient-to-r from-teal-600 to-emerald-600 py-3 text-sm font-semibold text-white shadow-md shadow-teal-600/20 transition-all hover:from-teal-500 hover:to-emerald-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600 active:scale-[0.99] disabled:opacity-60 disabled:cursor-not-allowed"
+            className="w-full rounded-xl bg-gradient-to-r from-teal-600 to-emerald-600 py-3 text-sm font-semibold text-white shadow-md shadow-teal-600/20 transition-all hover:from-teal-500 hover:to-emerald-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600 active:scale-[0.99] disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
           >
             {isSubmitting ? 'Signing in...' : 'Sign in'}
           </button>
