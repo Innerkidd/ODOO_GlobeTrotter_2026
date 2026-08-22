@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { toast } from 'sonner';
+
+import { useAuth } from '../../../context/AuthContext';
 
 import AuthLayout from '../../components/auth/AuthLayout/AuthLayout';
 import AuthCard from '../../components/auth/AuthCard/AuthCard';
@@ -40,6 +42,8 @@ const signupSchema = z
 
 const SignupPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { signup } = useAuth();
+  const navigate = useNavigate();
 
   const {
     register,
@@ -56,14 +60,22 @@ const SignupPage = () => {
     },
   });
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     setIsSubmitting(true);
-    setTimeout(() => {
-      setIsSubmitting(false);
-      toast.info('Account creation form validated! Account creation will be connected when authentication APIs are integrated.', {
-        duration: 5000,
-      });
-    }, 600);
+    // Backend expects { name, email, password }
+    const result = await signup({
+      name: data.fullName,
+      email: data.email,
+      password: data.password,
+    });
+    setIsSubmitting(false);
+
+    if (result.success) {
+      toast.success('Account created successfully');
+      navigate('/dashboard', { replace: true });
+    } else {
+      toast.error(result.message || 'Registration failed');
+    }
   };
 
   return (
