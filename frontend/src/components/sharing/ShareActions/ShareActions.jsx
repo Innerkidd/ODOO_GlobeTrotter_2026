@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { ExternalLink, Share2, MessageCircle, Twitter } from 'lucide-react';
 import { toast } from 'sonner';
 
-import { apiClient } from '../../services/api/apiClient';
+import { apiClient } from '../../../../services/api/axiosClient';
 
 const ShareActions = ({ tripId = 'demo-trip', tripTitle = 'European Summer Journey' }) => {
   const navigate = useNavigate();

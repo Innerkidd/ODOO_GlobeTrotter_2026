@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { toast } from 'sonner';
 
-import { apiClient } from '../../services/api/apiClient';
+import { apiClient } from '../../../../services/api/axiosClient';
 
 const ShareLink = ({ tripId }) => {
   const [shareUrl, setShareUrl] = useState('');
@@ -75,7 +75,7 @@ const ShareLink = ({ tripId }) => {
           id="shareable-url"
           type="text"
           readOnly
-          value={shareUrl || `${window.location.origin}/public/trips/${shareId || 'demo-trip}'}`
+          value={shareUrl || `${window.location.origin}/public/trips/${shareId || 'demo-trip'}`}
           className="w-full rounded-xl border border-slate-300 bg-slate-50 px-3.5 py-2.5 text-xs sm:text-sm font-mono text-slate-800 focus:outline-hidden"
         />
         <button

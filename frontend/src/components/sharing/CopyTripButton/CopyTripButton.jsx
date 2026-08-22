@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import { Copy, Sparkles } from 'lucide-react';
 import { toast } from 'sonner';
-import { apiClient } from '../../services/api/apiClient';
+import { apiClient } from '../../../../services/api/axiosClient';
 
 const CopyTripButton = ({ tripTitle = 'Trip', shareId = null }) => {
   const navigate = useNavigate();

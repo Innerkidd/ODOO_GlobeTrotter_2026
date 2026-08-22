@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { apiRequest } from '../../lib/apiClient';
@@ -9,7 +9,6 @@ const CreateTripPage = () => {
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-<<<<<<< HEAD
   // Auth guard: redirect to login if no token
   useEffect(() => {
     const token = localStorage.getItem('globetrotter_token');
@@ -18,8 +17,6 @@ const CreateTripPage = () => {
     }
   }, [navigate]);
 
-=======
->>>>>>> 8bd2239 (fix(frontend): resolve image rendering fallback, date formatting)
   const handleTripSubmit = async (data) => {
     setIsSubmitting(true);
     let createdTripId = null;
@@ -38,23 +35,6 @@ const CreateTripPage = () => {
         }),
       });
 
-<<<<<<< HEAD
-      const tripForHandoff = {
-        id: res.data.id,
-        tripName: res.data.title,
-        startDate: res.data.startDate,
-        endDate: res.data.endDate,
-        description: res.data.description,
-        coverPhotoPreviewUrl: null,
-        stops: [],
-      };
-
-      toast.success('Trip details ready for the next step.');
-
-      navigate(`/trips/${res.data.id}/itinerary`, { state: { trip: tripForHandoff } });
-    } catch (err) {
-      toast.error(err.message || 'Could not create trip. Please try again.');
-=======
       if (res?.data?.id) {
         createdTripId = res.data.id;
         tripForHandoff = {
@@ -80,7 +60,6 @@ const CreateTripPage = () => {
         coverPhotoPreviewUrl: data.coverPhotoPreviewUrl || null,
         stops: [],
       };
->>>>>>> 8bd2239 (fix(frontend): resolve image rendering fallback, date formatting)
     } finally {
       setIsSubmitting(false);
     }
